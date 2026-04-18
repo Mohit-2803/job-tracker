@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFParse } from "pdf-parse";
 import mammoth from "mammoth";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const formData = await request.formData();
   const file = formData.get("file") as File | null;
 
@@ -25,5 +32,14 @@ export async function POST(request: NextRequest) {
     rawText = result.value;
   }
 
-  return NextResponse.json({ rawText });
+  const resume = await prisma.resume.create({
+    data: {
+      userId: session.user.id,
+      title: file.name.replace(/\.[^/.]+$/, ""),
+      rawText: rawText,
+      parsedData: {},
+    },
+  });
+
+  return NextResponse.json({ resume });
 }
