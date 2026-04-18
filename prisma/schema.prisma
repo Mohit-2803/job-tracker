@@ -154,6 +154,13 @@ model ChatMessage {
   @@index([userId, createdAt])
 }
 
+model WebhookEvent {
+  id        String   @id @default(cuid())
+  eventId   String   @unique
+  type      String
+  createdAt DateTime @default(now())
+}
+
 model WeeklyReport {
   id                String   @id @default(cuid())
   userId            String
