@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { UploadCloud, FileText, Loader2 } from "lucide-react";
 
@@ -14,6 +15,7 @@ const MAX_SIZE_MB = 5;
 
 export default function ResumeUpload() {
   const [uploading, setUploading] = useState(false);
+  const router = useRouter();
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -36,8 +38,8 @@ export default function ResumeUpload() {
         return;
       }
 
-      toast.success("Resume uploaded and parsed successfully!");
-      console.log("Parsed text preview:", data.rawText?.slice(0, 200));
+      toast.success("Resume uploaded. Review the extracted data.");
+      router.push(`/dashboard/resumes/${data.resume.id}`);
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {

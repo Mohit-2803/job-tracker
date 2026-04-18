@@ -3,6 +3,7 @@ import { PDFParse } from "pdf-parse";
 import mammoth from "mammoth";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { extractResumeData } from "@/lib/ai/groq-client";
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -32,12 +33,14 @@ export async function POST(request: NextRequest) {
     rawText = result.value;
   }
 
+  const parsedData = await extractResumeData(rawText);
+
   const resume = await prisma.resume.create({
     data: {
       userId: session.user.id,
       title: file.name.replace(/\.[^/.]+$/, ""),
       rawText: rawText,
-      parsedData: {},
+      parsedData: parsedData,
     },
   });
 

@@ -9,7 +9,9 @@
       "Bash(node -e \"require\\('@tailwindcss/postcss'\\)\")",
       "Bash(grep -A 30 \"### \\\\`getText\\\\` — Extract Text\" /c/Users/perso/Programming/Job-Tracker/node_modules/pdf-parse/README.md)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(npm install *)"
     ]
   }
 }
