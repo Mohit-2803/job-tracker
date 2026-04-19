@@ -1,14 +1,28 @@
 import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+  prisma: ReturnType<typeof createPrismaClient> | undefined;
 };
 
-// Reuse existing instance if available, otherwise create a new one
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+function createPrismaClient() {
+  return new PrismaClient().$extends({
+    query: {
+      resume: {
+        async $allOperations({ operation, args, query }) {
+          const READ_OPS = ["findUnique", "findFirst", "findMany", "count", "aggregate"];
+          if (READ_OPS.includes(operation)) {
+            const a = args as { where?: Record<string, unknown> };
+            a.where = { ...(a.where ?? {}), deletedAt: null };
+          }
+          return query(args);
+        },
+      },
+    },
+  });
+}
 
-// In dev, hot reload would create a new PrismaClient on every file save
-// — storing it on globalThis prevents connection pool exhaustion
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }

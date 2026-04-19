@@ -29,6 +29,7 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
       skills: initialData.skills ?? [],
       experience: initialData.experience ?? [],
       education: initialData.education ?? [],
+      projects: initialData.projects ?? [],
       certifications: initialData.certifications ?? [],
       languages: initialData.languages ?? [],
     },
@@ -37,6 +38,7 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
   const skillsArray = useFieldArray({ control, name: "skills" as never });
   const experienceArray = useFieldArray({ control, name: "experience" });
   const educationArray = useFieldArray({ control, name: "education" });
+  const projectsArray = useFieldArray({ control, name: "projects" });
   const certificationsArray = useFieldArray({ control, name: "certifications" as never });
   const languagesArray = useFieldArray({ control, name: "languages" as never });
 
@@ -153,6 +155,32 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
             className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
           >
             <Plus className="w-4 h-4" /> Add education
+          </button>
+        </div>
+      </Section>
+
+      {/* Projects */}
+      <Section title="Projects">
+        <div className="space-y-4">
+          {projectsArray.fields.map((field, i) => (
+            <div key={field.id} className="border rounded-lg p-4 space-y-2 bg-gray-50">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-medium text-gray-500">Project {i + 1}</span>
+                <button type="button" onClick={() => projectsArray.remove(i)} className="text-red-500 hover:text-red-700">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+              <Field label="Name" {...register(`projects.${i}.name`)} />
+              <TextArea label="Description" {...register(`projects.${i}.description`)} />
+              <Field label="Link" {...register(`projects.${i}.link`)} />
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => projectsArray.append({ name: "", description: "", technologies: [], link: "" })}
+            className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+          >
+            <Plus className="w-4 h-4" /> Add project
           </button>
         </div>
       </Section>

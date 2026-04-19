@@ -30,6 +30,16 @@ export const ResumeSchema = z.object({
       }),
     )
     .optional(),
+  projects: z
+    .array(
+      z.object({
+        name: z.string().optional(),
+        description: z.string().optional(),
+        technologies: z.array(z.string()).optional(),
+        link: z.string().optional(),
+      }),
+    )
+    .optional(),
   certifications: z.array(z.string()).optional(),
   languages: z.array(z.string()).optional(),
 });

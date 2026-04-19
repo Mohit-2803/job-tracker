@@ -1,5 +1,33 @@
 # Job Agent — Daily Progress Log
 
+## 2026-04-20 (Day 3) — Phase 2 fully closed
+
+### Shipped
+- **Cloudinary file storage:** SDK + helper with Zod-validated upload response, raw uploads to `resumes/<userId>/`, download button on detail page (`fl_attachment` forces download)
+- **Schema:** `cloudinaryPublicId` added to Resume (for future cleanup jobs)
+- **Avatar fix:** whitelisted Google + GitHub hosts in next.config, switched Header to `next/image` to avoid Google 429 rate limits
+- **Phase 2 gap audit + fixes:**
+  - `projects[]` extraction added to ResumeSchema, prompt, and edit form (was missing per PDF)
+  - LLM retry: refactored `extractResumeData` to retry once with corrective prompt (`buildCorrectivePrompt` uses `error.issues`), throws on second failure — no more silent `safeParse` bypass
+- **Soft-delete on Resume (Phase 4 work pulled forward):** `deletedAt DateTime?` + index, Prisma `$extends` query middleware auto-filters `deletedAt: null` on all reads (modern API; `$use` deprecated in Prisma 6)
+
+### Decisions made
+- Multi-resume profile UI **deferred** — Phase 5 will use a per-application resume picker (cleaner than `isDefault`), Phase 7 enforces Free-tier limit
+- Sentry **deferred to next session** (option (a) wizard or (b) manual TBD)
+- Deployment gate **relaxed**: PDF puts formal deploy at Phase 8; "deploy from Phase 1" is best-practice nudge in §19 Common Mistakes, not a hard checkpoint. Continuing to Phase 3 without prod deploy
+- Database wiped today (mixed `db push` + `migrate dev` reset everything) — staying on `db push` until Phase 8 baseline migration
+
+### Bugs fixed mid-session
+- DB wiped → recreated via `npx prisma db push` + re-login
+- Google avatar 429 → `next/image` proxies and caches server-side
+
+### Phase 2 gaps still open (deferred, not blocking)
+- [ ] Sentry error tracking (next session)
+- [ ] Production deploy (Phase 8)
+- [ ] Multi-resume profile UI (Phase 5/7)
+
+---
+
 ## 2026-04-19 (Day 2) — Phase 2 mostly done
 
 ### Shipped
