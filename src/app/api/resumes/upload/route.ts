@@ -4,6 +4,7 @@ import mammoth from "mammoth";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { extractResumeData } from "@/lib/ai/groq-client";
+import { uploadResumeFile } from "@/lib/cloudinary";
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -33,6 +34,12 @@ export async function POST(request: NextRequest) {
     rawText = result.value;
   }
 
+  const uploadResult = await uploadResumeFile(
+    buffer,
+    session.user.id,
+    file.name,
+  );
+
   const parsedData = await extractResumeData(rawText);
 
   const resume = await prisma.resume.create({
@@ -41,6 +48,8 @@ export async function POST(request: NextRequest) {
       title: file.name.replace(/\.[^/.]+$/, ""),
       rawText: rawText,
       parsedData: parsedData,
+      fileUrl: uploadResult.secure_url,
+      cloudinaryPublicId: uploadResult.public_id,
     },
   });
 

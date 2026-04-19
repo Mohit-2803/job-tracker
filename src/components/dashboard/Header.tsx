@@ -1,5 +1,6 @@
 import { signOut } from "@/lib/auth";
 import type { User } from "next-auth";
+import Image from "next/image";
 
 export default function Header({ user }: { user: User }) {
   return (
@@ -7,8 +8,7 @@ export default function Header({ user }: { user: User }) {
       <div />
       <div className="flex items-center gap-3">
         {user.image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={user.image}
             alt={user.name ?? "User"}
             width={32}

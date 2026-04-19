@@ -16,6 +16,7 @@
     "@t3-oss/env-nextjs": "^0.13.11",
     "ai": "^6.0.168",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",
     "groq-sdk": "^1.1.2",
     "lucide-react": "^1.8.0",
