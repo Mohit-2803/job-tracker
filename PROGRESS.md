@@ -11,6 +11,9 @@
 - **Seed script** — `prisma/seed.ts` creates 15 fake companies + 100 applications via Faker. Production-guarded, idempotent (deletes seeded rows first), parallel inserts via `Promise.all`. Realistic status funnel via cumulative-distribution weighted random picker (DSA: same algorithm as weighted load balancers). `@faker-js/faker` + `tsx` added as devDeps.
 - **README upgrade** — replaced Next.js boilerplate with portfolio-grade README: status badges (CI live), pitch, "why this exists" story, features (shipped vs coming), tech stack, getting-started, project structure, roadmap with phase checkboxes, engineering principles, MIT license.
 - **LICENSE file** — MIT, ©2026 Mohit.
+- **SECURITY.md** + GitHub Dependabot/secret-scanning toggles enabled. Confirmed live (Dependabot already flagged 2 moderate vulns on first push).
+- **Health check `/api/health`** — pings Prisma (`SELECT 1`) + Redis (`PING`) in parallel via `Promise.all`. Returns 200 with `{status:"ok"}` when both up, 503 with `{status:"degraded"}` otherwise. Public endpoint, no auth.
+- **Singleton Redis client** at `src/lib/redis.ts` — `ioredis` with `lazyConnect: true`, globalThis pattern for HMR safety. BullMQ-ready for Phase 6.
 
 ### Decisions made
 - Phase 3 (Playwright + scrapers) deliberately deferred to tomorrow — tonight was re-entry, not progress
@@ -19,8 +22,8 @@
 - Did NOT upgrade Prisma 6 → 7 despite update prompt — major version, breaking changes, Phase 8 territory
 
 ### Carried over (deferred, not blocking)
-- [ ] Health check `/api/health` (10 min, before BullMQ in Phase 6)
-- [ ] `SECURITY.md` + GitHub secret scanning (2 min, do anytime)
+- [x] Health check `/api/health` — done same session
+- [x] `SECURITY.md` + GitHub secret scanning — done same session
 - [ ] Multi-resume profile UI (Phase 5/7)
 - [ ] Production deploy (Phase 8)
 - [ ] Rotate Groq + Google OAuth + Cloudinary keys eventually (paranoia hygiene; secrets briefly visible during config session)
