@@ -4,7 +4,7 @@
 
 If you discover a security vulnerability in this project, please **do not open a public GitHub issue**.
 
-Instead, report it privately by emailing **paddy@crosseven.com** with:
+Instead, report it privately by emailing **mohitsharma2882003@gmail.com** with:
 
 - A description of the issue
 - Steps to reproduce
@@ -21,8 +21,8 @@ In scope:
 - API routes under `src/app/api/`
 - File upload pipeline (resume parsing, Cloudinary integration)
 - LLM input/output handling
-- Razorpay webhook handling *(once Phase 7 ships)*
-- BullMQ workers *(once Phase 6 ships)*
+- Razorpay webhook handling _(once Phase 7 ships)_
+- BullMQ workers _(once Phase 6 ships)_
 
 Out of scope:
 
