@@ -10,8 +10,6 @@
 
 ---
 
-AKIAIOSFODNN7EXAMPLE
-
 ## Why this exists
 
 Job hunting in 2026 is a numbers game with a quality penalty: you need to apply to 50+ companies, but each application demands a tailored resume, a researched cover letter, and ongoing awareness of what's happening at the company between application and interview. Doing that manually takes 30+ minutes per application.
