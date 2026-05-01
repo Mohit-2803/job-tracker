@@ -20,6 +20,8 @@ This is a real product I'll use, not a portfolio toy. Built in public over ~4 mo
 
 ---
 
+AWS sectret -> AKIAIOSFODNN7EXAMPLE
+
 ## Features
 
 - **Resume parsing** — PDF & DOCX upload, AI-extracted structured data (skills, experience, education, projects), edit-and-save UI with React Hook Form
