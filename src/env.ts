@@ -23,8 +23,11 @@ export const env = createEnv({
     CLOUDINARY_API_SECRET: z.string().min(2).max(128),
     APP_URL: z.url(),
   },
-  client: {},
+  client: {
+    NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
+  },
   runtimeEnv: {
+    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
     DATABASE_URL: process.env.DATABASE_URL,
     AUTH_SECRET: process.env.AUTH_SECRET,
     AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
