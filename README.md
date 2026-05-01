@@ -10,6 +10,8 @@
 
 ---
 
+AKIAIOSFODNN7EXAMPLE
+
 ## Why this exists
 
 Job hunting in 2026 is a numbers game with a quality penalty: you need to apply to 50+ companies, but each application demands a tailored resume, a researched cover letter, and ongoing awareness of what's happening at the company between application and interview. Doing that manually takes 30+ minutes per application.
@@ -30,18 +32,19 @@ This is a real product I'll use, not a portfolio toy. Built in public over ~4 mo
 
 ### Coming soon
 
-- 🚧 **Multi-source company research** — Playwright scrapers for LinkedIn, Naukri, Instahyre + news/funding/Glassdoor aggregation, with 24h Redis cache and per-domain rate limiting *(Phase 3)*
-- ⏳ **Application pipeline** — drag-and-drop Kanban (`@dnd-kit`), Recharts analytics, soft-delete with undo *(Phase 4)*
-- ⏳ **AI resume tailoring + streaming chat advisor** — reorder/rephrase only, never fabricate; SSE streaming via Vercel AI SDK *(Phase 5)*
-- ⏳ **Weekly autonomous monitor** — BullMQ worker re-researches applied companies every week, emails you about layoffs, funding rounds, and leadership exits *(Phase 6)*
-- ⏳ **Razorpay subscriptions** — HMAC-verified webhooks, idempotent event handling, Free (10 apps/mo) vs Pro (unlimited) tiers *(Phase 7)*
-- ⏳ **Production deploy** — multi-stage Dockerfile, Nginx reverse proxy, Oracle Cloud ARM, Cloudflare, Let's Encrypt, GitHub Actions CI/CD *(Phase 8)*
+- 🚧 **Multi-source company research** — Playwright scrapers for LinkedIn, Naukri, Instahyre + news/funding/Glassdoor aggregation, with 24h Redis cache and per-domain rate limiting _(Phase 3)_
+- ⏳ **Application pipeline** — drag-and-drop Kanban (`@dnd-kit`), Recharts analytics, soft-delete with undo _(Phase 4)_
+- ⏳ **AI resume tailoring + streaming chat advisor** — reorder/rephrase only, never fabricate; SSE streaming via Vercel AI SDK _(Phase 5)_
+- ⏳ **Weekly autonomous monitor** — BullMQ worker re-researches applied companies every week, emails you about layoffs, funding rounds, and leadership exits _(Phase 6)_
+- ⏳ **Razorpay subscriptions** — HMAC-verified webhooks, idempotent event handling, Free (10 apps/mo) vs Pro (unlimited) tiers _(Phase 7)_
+- ⏳ **Production deploy** — multi-stage Dockerfile, Nginx reverse proxy, Oracle Cloud ARM, Cloudflare, Let's Encrypt, GitHub Actions CI/CD _(Phase 8)_
 
 ---
 
 ## Tech stack
 
 **Frontend**
+
 - Next.js 15 (App Router, React 19, Turbopack)
 - TypeScript (strict mode, no `any`)
 - Tailwind CSS v4 + shadcn/ui + Radix UI
@@ -49,6 +52,7 @@ This is a real product I'll use, not a portfolio toy. Built in public over ~4 mo
 - Lucide icons, Sonner toasts, Recharts (Phase 4)
 
 **Backend**
+
 - Next.js API routes
 - Prisma 6 + PostgreSQL
 - NextAuth v5 (GitHub + Google OAuth, JWT strategy)
@@ -56,17 +60,20 @@ This is a real product I'll use, not a portfolio toy. Built in public over ~4 mo
 - Resend for transactional email (Phase 6)
 
 **AI**
+
 - Groq (Llama 3.3 70B) — primary LLM with structured JSON mode
 - Zod schemas validate every LLM output
 - Retry-with-corrective-prompt loop using Zod's `error.issues` for self-healing parses
 
 **Storage & infra**
+
 - Cloudinary for resume file storage
 - Docker Compose for local Postgres + Redis
 - Sentry for error tracking & performance monitoring
 - GitHub Actions CI (type-check + lint on every push)
 
-**Payments** *(Phase 7)*
+**Payments** _(Phase 7)_
+
 - Razorpay Subscriptions, HMAC-verified webhooks, event-ID idempotency
 
 ---
@@ -108,15 +115,15 @@ Open [http://localhost:3000](http://localhost:3000), log in with Google or GitHu
 
 ### Scripts
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | Start the dev server with Turbopack |
-| `npm run build` | Production build |
-| `npm run start` | Run the production build locally |
-| `npm run lint` | ESLint |
-| `npx prisma studio` | Open the DB GUI |
-| `npx prisma db push` | Sync schema to the DB (dev only) |
-| `npx prisma db seed` | Populate dev DB with fake data |
+| Command              | What it does                        |
+| -------------------- | ----------------------------------- |
+| `npm run dev`        | Start the dev server with Turbopack |
+| `npm run build`      | Production build                    |
+| `npm run start`      | Run the production build locally    |
+| `npm run lint`       | ESLint                              |
+| `npx prisma studio`  | Open the DB GUI                     |
+| `npx prisma db push` | Sync schema to the DB (dev only)    |
+| `npx prisma db seed` | Populate dev DB with fake data      |
 
 ---
 
@@ -152,16 +159,16 @@ job-tracker/
 
 ## Roadmap
 
-| Phase | Status | Scope |
-|---|---|---|
-| 1 | ✅ Done | Next.js 15 + Prisma + NextAuth + local Docker foundation |
-| 2 | ✅ Done | Resume upload, AI extraction, Cloudinary, soft-delete, validated env |
-| 3 | 🚧 In progress | Playwright scrapers + multi-source company research agent |
-| 4 | ⏳ | Kanban pipeline, Recharts analytics, soft-delete UX |
-| 5 | ⏳ | Resume tailoring engine + streaming chat advisor (Vercel AI SDK) |
-| 6 | ⏳ | BullMQ weekly monitor + Resend email reports |
-| 7 | ⏳ | Razorpay subscriptions + idempotent webhooks |
-| 8 | ⏳ | Multi-stage Dockerfile, Nginx, Oracle Cloud ARM deploy, CD |
+| Phase | Status         | Scope                                                                |
+| ----- | -------------- | -------------------------------------------------------------------- |
+| 1     | ✅ Done        | Next.js 15 + Prisma + NextAuth + local Docker foundation             |
+| 2     | ✅ Done        | Resume upload, AI extraction, Cloudinary, soft-delete, validated env |
+| 3     | 🚧 In progress | Playwright scrapers + multi-source company research agent            |
+| 4     | ⏳             | Kanban pipeline, Recharts analytics, soft-delete UX                  |
+| 5     | ⏳             | Resume tailoring engine + streaming chat advisor (Vercel AI SDK)     |
+| 6     | ⏳             | BullMQ weekly monitor + Resend email reports                         |
+| 7     | ⏳             | Razorpay subscriptions + idempotent webhooks                         |
+| 8     | ⏳             | Multi-stage Dockerfile, Nginx, Oracle Cloud ARM deploy, CD           |
 
 See [CLAUDE.md](./CLAUDE.md) for the full mentor blueprint, code standards, and the DSA mapping used to connect each piece to interview-grade fundamentals.
 
@@ -175,8 +182,8 @@ A few non-negotiables this project enforces — visible in code review and worth
 - **Zod at every boundary** — env vars, API inputs, LLM outputs, third-party responses, webhook payloads
 - **Composite indexes** before queries that filter by more than `id`
 - **Soft delete via Prisma middleware**, never hard-delete user data
-- **No scraping inside API routes** — all long work goes through BullMQ workers in a separate container *(Phase 6)*
-- **Webhook signature verification + event-ID idempotency** *(Phase 7)*
+- **No scraping inside API routes** — all long work goes through BullMQ workers in a separate container _(Phase 6)_
+- **Webhook signature verification + event-ID idempotency** _(Phase 7)_
 - **Resume tailoring may reorder/rephrase, never fabricate** — bright integrity line
 
 ---

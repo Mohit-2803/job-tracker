@@ -11,7 +11,10 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(git push *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(docker exec *)",
+      "Bash(gh run *)",
+      "Bash(npx tsc *)"
     ]
   }
 }
