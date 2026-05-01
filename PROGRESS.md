@@ -1,5 +1,40 @@
 # Job Agent — Daily Progress Log
 
+## 2026-05-01 (Day 4) — Re-entry + Phase 3 prep
+
+### Context
+- 11-day gap since Day 3 (motivation + post-work exhaustion). Deliberate gentle re-entry: small wins, ship every commit, no Playwright tonight.
+
+### Shipped
+- **Sentry error tracking + tracing** — `@sentry/nextjs` across client/server/edge runtimes. DSN env-driven (`NEXT_PUBLIC_SENTRY_DSN`), `tracesSampleRate` scales by env (1.0 dev / 0.1 prod), `sendDefaultPii: false` (resume app — no PII to third party). Verified end-to-end with the wizard's example page, then deleted.
+- **GitHub Actions CI** — `.github/workflows/ci.yml`: type-check (`tsc --noEmit`) + lint on every push and PR to master. Node 22, npm cache, Prisma generate step. ~1.5 min per run.
+- **Seed script** — `prisma/seed.ts` creates 15 fake companies + 100 applications via Faker. Production-guarded, idempotent (deletes seeded rows first), parallel inserts via `Promise.all`. Realistic status funnel via cumulative-distribution weighted random picker (DSA: same algorithm as weighted load balancers). `@faker-js/faker` + `tsx` added as devDeps.
+- **README upgrade** — replaced Next.js boilerplate with portfolio-grade README: status badges (CI live), pitch, "why this exists" story, features (shipped vs coming), tech stack, getting-started, project structure, roadmap with phase checkboxes, engineering principles, MIT license.
+- **LICENSE file** — MIT, ©2026 Mohit.
+
+### Decisions made
+- Phase 3 (Playwright + scrapers) deliberately deferred to tomorrow — tonight was re-entry, not progress
+- Cadence reset acknowledged: weekday 2-hr target was aspirational; build for 30–60 min reality
+- Did NOT run `npm audit fix` despite 5 moderate vulns from new devDeps — likely transitive in pdf-parse area, defer to Phase 8 dep audit
+- Did NOT upgrade Prisma 6 → 7 despite update prompt — major version, breaking changes, Phase 8 territory
+
+### Carried over (deferred, not blocking)
+- [ ] Health check `/api/health` (10 min, before BullMQ in Phase 6)
+- [ ] `SECURITY.md` + GitHub secret scanning (2 min, do anytime)
+- [ ] Multi-resume profile UI (Phase 5/7)
+- [ ] Production deploy (Phase 8)
+- [ ] Rotate Groq + Google OAuth + Cloudinary keys eventually (paranoia hygiene; secrets briefly visible during config session)
+
+### Hygiene notes for future-me
+- Stay on `npx prisma db push` until Phase 8 baseline migration. **Never run `migrate dev`** — wiped DB on Day 3.
+- Prisma's `package.json#prisma` config is deprecated — Prisma 7 wants `prisma.config.ts`. Migrate when upgrading.
+- Soft-delete `$extends` only on Resume model. Extend to Application when soft-delete on apps lands in Phase 4.
+
+### Next session (Day 5) — one objective
+**Sketch Phase 3 architecture on paper, no code.** Define the `Scraper` interface, per-source adapters (LinkedIn / Naukri / Instahyre / generic), where Redis caching fits, where BullMQ fits. 30–60 min thinking before any keystroke.
+
+---
+
 ## 2026-04-20 (Day 3) — Phase 2 fully closed
 
 ### Shipped
