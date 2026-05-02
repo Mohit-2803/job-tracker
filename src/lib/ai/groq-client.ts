@@ -1,8 +1,8 @@
 import Groq from "groq-sdk";
 import { z } from "zod";
 import { env } from "@/env";
-import { ResumeSchema, type ParsedResume } from "./schema";
-import { buildResumeExtractionPrompt } from "./prompts";
+import { ResumeSchema, JobExtractSchema, type ParsedResume, type ParsedJobExtract } from "./schema";
+import { buildResumeExtractionPrompt, buildJobExtractionPrompt } from "./prompts";
 
 export const groqClient = new Groq({ apiKey: env.GROQ_API_KEY });
 
@@ -49,5 +49,21 @@ export async function extractResumeData(rawText: string): Promise<ParsedResume> 
 
   throw new Error(
     `Resume extraction failed Zod validation after retry: ${retry.error.message}`,
+  );
+}
+
+export async function extractJobData(rawText: string): Promise<ParsedJobExtract> {
+  const prompt = buildJobExtractionPrompt(rawText.substring(0, 15000)); // Llama context limit safety
+
+  const firstRaw = await callGroq(prompt);
+  const first = JobExtractSchema.safeParse(JSON.parse(firstRaw));
+  if (first.success) return first.data;
+
+  const retryRaw = await callGroq(buildCorrectivePrompt(prompt, first.error));
+  const retry = JobExtractSchema.safeParse(JSON.parse(retryRaw));
+  if (retry.success) return retry.data;
+
+  throw new Error(
+    `Job extraction failed Zod validation after retry: ${retry.error.message}`
   );
 }

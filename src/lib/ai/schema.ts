@@ -45,3 +45,18 @@ export const ResumeSchema = z.object({
 });
 
 export type ParsedResume = z.infer<typeof ResumeSchema>;
+
+export const JobExtractSchema = z.object({
+  _thought_process: z.string(),
+  jobTitle: z.string(),
+  jobDescription: z.string(),
+  extractedSkills: z.array(z.string()),
+  companyName: z.string(),
+  jobLocation: z.string().optional(),
+  salaryRange: z.string().optional(),
+  workModel: z.enum(["Remote", "Hybrid", "On-site", "Unknown"]).default("Unknown"),
+  employmentType: z.string().optional(),
+  yearsOfExperience: z.string().optional(),
+});
+
+export type ParsedJobExtract = z.infer<typeof JobExtractSchema>;

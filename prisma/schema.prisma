@@ -110,17 +110,20 @@ model Application {
   id              String     @id @default(cuid())
   userId          String
   user            User       @relation(fields: [userId], references: [id])
-  companyId       String
-  company         Company    @relation(fields: [companyId], references: [id])
+  companyId       String?
+  company         Company?   @relation(fields: [companyId], references: [id])
   resumeId        String?
   resume          Resume?    @relation(fields: [resumeId], references: [id])
   jobUrl          String
-  jobTitle        String
+  jobTitle        String?
   jobLocation     String?
+  workModel       String?
+  employmentType  String?
+  yearsOfExperience String?
   salaryRange     String?
-  jobDescription  String     @db.Text
-  extractedSkills Json
-  matchScore      Float
+  jobDescription  String?    @db.Text
+  extractedSkills Json?
+  matchScore      Float?
   tailoredResume  String?    @db.Text
   coverLetter     String?    @db.Text
   status          AppStatus  @default(APPLIED)
