@@ -27,21 +27,25 @@ You are a **senior full-stack engineer and mentor**, not a code-completion tool.
 1. **Weeks 1–2:** Next.js 15 + Prisma + NextAuth + local Docker (Postgres + Redis) foundation.
 2. **Weeks 3–4:** `@t3-oss/env-nextjs` setup, resume upload, `pdf-parse` / `mammoth`, Groq structured extraction with Zod.
 3. **Weeks 5–7:** Playwright scrapers (per-source strategy pattern) + multi-source company research agent + match scoring.
-4. **Weeks 8–9:** Dashboard — Kanban pipeline (`@dnd-kit`), Recharts analytics, `useMemo`/`useCallback` perf work. **Add soft delete** (`deletedAt DateTime?`) to `Application` and `Resume` — users need undo, and hard-deleting breaks FK references. Add Prisma middleware to auto-filter `deletedAt IS NULL` on all queries.
+4. **Weeks 8–9:** Dashboard — Kanban pipeline (`@dnd-kit`), Recharts analytics. **COMPLETED ✅** (Upgraded with Obsidian High-Fidelity UI).
 5. **Weeks 10–12:** Resume tailoring engine (reorder/rephrase, never fabricate) + streaming chat with Vercel AI SDK + context injection.
 6. **Weeks 13–14:** BullMQ weekly monitor worker, Resend emails, perceive-think-act loop.
 7. **Weeks 15–16:** Razorpay subscriptions, webhook HMAC verification, idempotency via event IDs.
 8. **Weeks 17–18:** Multi-stage Dockerfile, Nginx reverse proxy, Oracle Cloud ARM VM, Cloudflare, Let's Encrypt, GitHub Actions CI/CD.
 
-## Engineering Excellence (Phase 3 Upgrades)
+---
+
+## Engineering Excellence (Intelligence Overhaul)
 
 We implemented several advanced patterns that go beyond the base requirements:
 
-1. **Semantic AI Matching**: Switched from simple array comparison to LLM-driven holistic analysis. The system now understands skill relationships (e.g., React implies JS) and factors in seniority (Resume Summary vs Job Req).
+1. **Semantic AI Matching**: Switched from simple array comparison to LLM-driven holistic analysis. The system now understands skill relationships (e.g., React implies JS).
 2. **Context-Aware Research**: To eliminate AI hallucinations for ambiguous company names (e.g., GIVA), we extract "Raw Company Context" from the page and pass it as "Ground Truth" to the research agent.
 3. **Strategic Feedback**: The system now generates `matchReasoning`, `topMissingSkills`, and `proTip` for every application, turning it into a career coaching tool.
-4. **Strategy Pattern Scrapers**: Decoupled scraping logic via `ScraperFactory` and `LinkedInScraper` inheritance, allowing for source-specific "torques" (like URL normalization) without touching the core worker.
-5. **Fail-Safe Pipeline**: Implemented a state-machine logic (`PENDING` -> `PROCESSING` -> `DRAFT` or `FAILED`) to ensure background jobs never "hang" without user feedback.
+4. **Strategy Pattern Scrapers**: Decoupled scraping logic via `ScraperFactory` and `LinkedInScraper` inheritance, allowing for source-specific "torques."
+5. **Fail-Safe Pipeline**: Implemented a state-machine logic (`PENDING` -> `PROCESSING` -> `DRAFT` or `FAILED`) to ensure background jobs never "hang."
+6. **High-Fidelity Visual Language**: Turn standard dashboards into "Intelligence Hubs." Use **non-linear timing** for background processes to create a sense of work, **sticky command headers** to keep global actions accessible, and **high-density grids** to surface market intel.
+7. **Neural Scroll-Sync**: Implement ScrollSpy/IntersectionObserver to maintain user orientation in long, data-dense dossiers.
 
 ---
 
