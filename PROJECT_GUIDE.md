@@ -28,10 +28,23 @@ You are a **senior full-stack engineer and mentor**, not a code-completion tool.
 2. **Weeks 3–4:** `@t3-oss/env-nextjs` setup, resume upload, `pdf-parse` / `mammoth`, Groq structured extraction with Zod.
 3. **Weeks 5–7:** Playwright scrapers (per-source strategy pattern) + multi-source company research agent + match scoring.
 4. **Weeks 8–9:** Dashboard — Kanban pipeline (`@dnd-kit`), Recharts analytics. **COMPLETED ✅** (Upgraded with Obsidian High-Fidelity UI).
-5. **Weeks 10–12:** Resume tailoring engine (reorder/rephrase, never fabricate) + streaming chat with Vercel AI SDK + context injection.
+5. **Weeks 10–12:** **Resume Factory & AI Advisor** — Tailoring engine (Suggestions Diff + full JSON restructure) + One-click PDF Export (Playwright-based) + streaming chat with Vercel AI SDK.
 6. **Weeks 13–14:** BullMQ weekly monitor worker, Resend emails, perceive-think-act loop.
 7. **Weeks 15–16:** Razorpay subscriptions, webhook HMAC verification, idempotency via event IDs.
 8. **Weeks 17–18:** Multi-stage Dockerfile, Nginx reverse proxy, Oracle Cloud ARM VM, Cloudflare, Let's Encrypt, GitHub Actions CI/CD.
+
+---
+
+## Phase 5 Subscription Strategy (Freemium)
+
+| Feature | Free Tier | Pro Tier (₹199/mo) |
+| :--- | :--- | :--- |
+| **Tailoring** | Read-only suggestions (Copy/Paste) | One-click restructuring (Magic Sync) |
+| **PDF Export** | Base PDF only | Unlimited Tailored PDFs + Themes |
+| **AI Chat** | 5 messages / app (Standard) | Unlimited Deep-Intel Chat (Context-Aware) |
+| **Monthly Limit** | 3 Analysis runs | Unlimited |
+
+---
 
 ---
 
@@ -46,6 +59,8 @@ We implemented several advanced patterns that go beyond the base requirements:
 5. **Fail-Safe Pipeline**: Implemented a state-machine logic (`PENDING` -> `PROCESSING` -> `DRAFT` or `FAILED`) to ensure background jobs never "hang."
 6. **High-Fidelity Visual Language**: Turn standard dashboards into "Intelligence Hubs." Use **non-linear timing** for background processes to create a sense of work, **sticky command headers** to keep global actions accessible, and **high-density grids** to surface market intel.
 7. **Neural Scroll-Sync**: Implement ScrollSpy/IntersectionObserver to maintain user orientation in long, data-dense dossiers.
+8. **The PDF Factory Pattern**: Instead of adding heavy PDF libraries, we reuse the existing Playwright infrastructure to render pixel-perfect, CSS-driven PDF resumes from tailored JSON data.
+9. **Differential Tailoring UX**: Providing users with a GitHub-style "Diff View" for resume changes to build trust before they commit to a download.
 
 ---
 

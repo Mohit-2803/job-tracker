@@ -71,7 +71,7 @@ Expected JSON structure:
   "jobTitle": "string — the exact job title",
   "jobDescription": "string — a highly readable Markdown formatted version of the core job description. Separate it into '## About the Role', '## Responsibilities' (bullet points), and '## Requirements' (bullet points). Do NOT include company overview here.",
   "extractedSkills": ["string", "string"] — an array of normalized required/preferred skills,
-  "companyName": "string — the name of the hiring company",
+  "companyName": "string — the name of the hiring company. On Indian job portals like Naukri, look for text like 'Posted by X' or the company name near the job title header. If a recruitment agency posted the job, use the agency name (e.g., 'Creative Hands HR'). Never return 'Unknown' if any company or agency name is visible on the page.",
   "jobLocation": "string — location (optional)",
   "salaryRange": "string — salary or compensation range if mentioned (optional)",
   "workModel": "string — strictly one of: 'Remote', 'Hybrid', 'On-site', or 'Unknown'",

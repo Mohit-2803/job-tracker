@@ -28,10 +28,26 @@ We have officially finished the Phase 3 core, but we are keeping these advanced 
 
 ---
 
-## Next Steps (Phase 5: AI Resume Tailoring & Chat)
+## 2026-05-03 (Day 6 - Late Night) — Phase 5 Strategic Architecture
 
-1. **Tailoring Engine**: Build the system to reorder and rephrase resume bullets specifically for a given Job Description.
-2. **Streaming AI Chat**: Add the Vercel AI SDK to stream career advice contextually injected with the user's resume and job data.
+### Context
+Late-night session focused on blueprinting the "Resume Factory." Moving from analytical tracking to strategic action.
+
+### Decisions Made
+- **The PDF Factory**: Confirmed "Pixel-Perfect PDF Export" as a core Phase 5 feature (Elite addition). We will reuse the Playwright infrastructure for server-side PDF generation.
+- **Freemium Split**: Defined Free vs. Pro boundaries for tailoring, chat, and PDF exports.
+- **DX Upgrade**: Added `--watch` to the BullMQ worker via `tsx` so code changes (like scraper logic) are picked up instantly without terminal restarts.
+
+### Shipped (The "Deep Scraper" Audit)
+- **LinkedIn Search Interceptor**: Fixed a bug where `/search-results` URLs weren't being converted to direct `/view` links.
+- **Akamai WAF Bypass**: Implemented the `channel: "chrome"` strategy for Playwright to bypass TLS fingerprinting on enterprise portals like Naukri.
+- **Naukri Scraper**: Created a dedicated `NaukriScraper` with "Fuzzy Selector" logic and advanced content-waiting to handle dynamic "Naukri Campus" layouts.
+- **Generic Scraper Resilience**: Upgraded the base scraper with `networkidle` waiting and high-quality User-Agent spoofing.
+- **Extraction Intelligence**: Refined the Groq prompt to handle "Posted by X" company patterns common on Indian job portals.
+
+### Next Session Objective
+1. **Initialize Phase 5**: Sketch the `TailorAgent` prompt logic and setup the Vercel AI SDK route.
+2. **Database Migration**: Add `tailoredResumeData` JSON field to the `Application` model.
 
 ---
 

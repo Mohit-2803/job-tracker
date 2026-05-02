@@ -6,7 +6,7 @@ export class LinkedInScraper extends GenericScraper {
 
     // Intercept search URLs
     console.log("DEBUG: LinkedInScraper received URL:", url)
-    if (url.includes("/jobs/search/") && url.includes("currentJobId=")) {
+    if (url.includes("linkedin.com") && url.includes("currentJobId=")) {
       const urlObj = new URL(url);
       const jobId = urlObj.searchParams.get("currentJobId");
       if (jobId) {
