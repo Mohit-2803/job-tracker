@@ -18,6 +18,7 @@ export interface JobExtractData {
   workModel?: string;
   employmentType?: string;
   yearsOfExperience?: string;
+  rawCompanyContext?: string;
 }
 
 export interface ScraperAdapter {
@@ -29,5 +30,5 @@ export interface ScraperAdapter {
   /**
    * Scrape a company's profile/domain and return structured research
    */
-  researchCompany(companyNameOrDomain: string): Promise<CompanyResearchData>;
+  researchCompany(companyNameOrDomain: string, context?: string): Promise<CompanyResearchData>;
 }

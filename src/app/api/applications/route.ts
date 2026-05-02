@@ -23,21 +23,26 @@ export async function POST(request: NextRequest) {
     // 3. Create the "Draft" Application in Postgres
     const application = await prisma.application.create({
       data: {
-        userId: session.user.id, 
-        jobUrl: jobUrl,        
+        userId: session.user.id,
+        jobUrl: jobUrl,
         status: "DRAFT", // Set initial status to DRAFT
       },
     });
-    
+
     // 4. Enqueue the job to BullMQ
-    await scraperQueue.add("scrape-job", { applicationId: application.id, url: jobUrl });
+    await scraperQueue.add("scrape-job", {
+      applicationId: application.id,
+      url: jobUrl,
+    });
 
     // 5. Return success immediately (do NOT wait for scraping)
-    return NextResponse.json({ 
-      message: "Job queued for scraping",
-      applicationId: application.id 
-    }, { status: 202 });
-
+    return NextResponse.json(
+      {
+        message: "Job queued for scraping",
+        applicationId: application.id,
+      },
+      { status: 202 },
+    );
   } catch (error) {
     console.error("Failed to enqueue job:", error);
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });

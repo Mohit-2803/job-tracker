@@ -1,8 +1,19 @@
 import Groq from "groq-sdk";
 import { z } from "zod";
 import { env } from "@/env";
-import { ResumeSchema, JobExtractSchema, type ParsedResume, type ParsedJobExtract } from "./schema";
-import { buildResumeExtractionPrompt, buildJobExtractionPrompt } from "./prompts";
+import {
+  ResumeSchema,
+  JobExtractSchema,
+  type ParsedResume,
+  type ParsedJobExtract,
+  CompanyResearchSchema,
+  type ParsedCompanyResearch,
+} from "./schema";
+import {
+  buildResumeExtractionPrompt,
+  buildJobExtractionPrompt,
+  buildCompanyResearchPrompt,
+} from "./prompts";
 
 export const groqClient = new Groq({ apiKey: env.GROQ_API_KEY });
 
@@ -24,7 +35,10 @@ async function callGroq(prompt: string): Promise<string> {
   return completion.choices[0]?.message?.content ?? "{}";
 }
 
-function buildCorrectivePrompt(originalPrompt: string, error: z.ZodError): string {
+function buildCorrectivePrompt(
+  originalPrompt: string,
+  error: z.ZodError,
+): string {
   const issues = error.issues
     .map((i) => `- path: ${i.path.join(".") || "(root)"} — ${i.message}`)
     .join("\n");
@@ -35,7 +49,9 @@ YOUR PREVIOUS RESPONSE FAILED VALIDATION. Fix these issues and return STRICTLY v
 ${issues}`;
 }
 
-export async function extractResumeData(rawText: string): Promise<ParsedResume> {
+export async function extractResumeData(
+  rawText: string,
+): Promise<ParsedResume> {
   const cleanedText = cleanResumeText(rawText);
   const prompt = buildResumeExtractionPrompt(cleanedText);
 
@@ -52,7 +68,9 @@ export async function extractResumeData(rawText: string): Promise<ParsedResume> 
   );
 }
 
-export async function extractJobData(rawText: string): Promise<ParsedJobExtract> {
+export async function extractJobData(
+  rawText: string,
+): Promise<ParsedJobExtract> {
   const prompt = buildJobExtractionPrompt(rawText.substring(0, 15000)); // Llama context limit safety
 
   const firstRaw = await callGroq(prompt);
@@ -64,6 +82,26 @@ export async function extractJobData(rawText: string): Promise<ParsedJobExtract>
   if (retry.success) return retry.data;
 
   throw new Error(
-    `Job extraction failed Zod validation after retry: ${retry.error.message}`
+    `Job extraction failed Zod validation after retry: ${retry.error.message}`,
+  );
+}
+
+export async function researchCompanyData(
+  companyName: string,
+  context?: string,
+): Promise<ParsedCompanyResearch> {
+  const prompt = buildCompanyResearchPrompt(companyName, context);
+
+  const firstRaw = await callGroq(prompt);
+  const first = CompanyResearchSchema.safeParse(JSON.parse(firstRaw));
+  if (first.success) return first.data;
+
+  // If the AI messes up the JSON, automatically retry with the corrective prompt!
+  const retryRaw = await callGroq(buildCorrectivePrompt(prompt, first.error));
+  const retry = CompanyResearchSchema.safeParse(JSON.parse(retryRaw));
+  if (retry.success) return retry.data;
+
+  throw new Error(
+    `Company research failed Zod validation after retry: ${retry.error.message}`,
   );
 }

@@ -8,7 +8,12 @@ type ResumeCardProps = {
   skillCount?: number;
 };
 
-export default function ResumeCard({ id, title, createdAt, skillCount }: ResumeCardProps) {
+export default function ResumeCard({
+  id,
+  title,
+  createdAt,
+  skillCount,
+}: ResumeCardProps) {
   return (
     <Link
       href={`/dashboard/resumes/${id}`}

@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 import { ScraperAdapter, JobExtractData, CompanyResearchData } from "./types";
-import { extractJobData } from "@/lib/ai/groq-client";
+import { extractJobData, researchCompanyData } from "@/lib/ai/groq-client";
 
 export class GenericScraper implements ScraperAdapter {
   async scrapeJob(url: string): Promise<JobExtractData> {
@@ -22,14 +22,20 @@ export class GenericScraper implements ScraperAdapter {
       await browser.close();
     }
 
-    // 5. Pass the raw text to Groq 
+    // 5. Pass the raw text to Groq
     console.log("Extracted text length:", rawText.length);
     const extractedData = await extractJobData(rawText);
-    
+
     // 6. Return the JobExtractData
     return extractedData;
   }
-    async researchCompany(companyNameOrDomain: string): Promise<CompanyResearchData> {
-        throw new Error("Method not implemented.");
-    }
+  
+  async researchCompany(companyNameOrDomain: string, context?: string): Promise<CompanyResearchData> {
+    console.log(`[Research Agent] Investigating company: ${companyNameOrDomain}...`);
+    const data = await researchCompanyData(companyNameOrDomain, context);
+    console.log(
+      `[Research Agent] Investigation complete for ${companyNameOrDomain}. Found industry: ${data.industry}`,
+    );
+    return data as CompanyResearchData;
+  }
 }

@@ -3,6 +3,7 @@
 ## 2026-05-02 (Day 5) — Phase 3 Scraping Foundation
 
 ### Shipped
+
 - **Strategy Pattern Interface**: Defined `ScraperAdapter` and implemented `GenericScraper` via Playwright.
 - **LLM Extraction Upgrade**: Updated Groq extraction prompt to include a `_thought_process` (Chain of Thought), explicit JSON schema formatting, and automated skill normalization.
 - **Async Queue Infrastructure**: Set up BullMQ with Redis. Created a separate Node.js `scraper-worker.ts` process.
@@ -11,6 +12,7 @@
 - **DX Improvements**: Installed `concurrently` and set up `npm run dev:all` for single-terminal logging, fixed BullMQ's `maxRetriesPerRequest` redis strictness, and enabled VS Code format-on-save via `.vscode/settings.json`.
 
 ### Next Steps (Phase 3 Wrap-up)
+
 1. **The Scraper Factory**: Build `LinkedInScraper` and a factory to auto-intercept `/search/` URLs and convert them to clean `/view/` URLs.
 2. **Match Scoring Engine**: Algorithm to compare uploaded Resume skills vs scraped Application skills.
 3. **Company Research Agent**: AI logic to search the web and populate Company details (funding, size, industry).
@@ -20,9 +22,11 @@
 ## 2026-05-01 (Day 4) — Re-entry + Phase 3 prep
 
 ### Context
+
 - 11-day gap since Day 3 (motivation + post-work exhaustion). Deliberate gentle re-entry: small wins, ship every commit, no Playwright tonight.
 
 ### Shipped
+
 - **Sentry error tracking + tracing** — `@sentry/nextjs` across client/server/edge runtimes. DSN env-driven (`NEXT_PUBLIC_SENTRY_DSN`), `tracesSampleRate` scales by env (1.0 dev / 0.1 prod), `sendDefaultPii: false` (resume app — no PII to third party). Verified end-to-end with the wizard's example page, then deleted.
 - **GitHub Actions CI** — `.github/workflows/ci.yml`: type-check (`tsc --noEmit`) + lint on every push and PR to master. Node 22, npm cache, Prisma generate step. ~1.5 min per run.
 - **Seed script** — `prisma/seed.ts` creates 15 fake companies + 100 applications via Faker. Production-guarded, idempotent (deletes seeded rows first), parallel inserts via `Promise.all`. Realistic status funnel via cumulative-distribution weighted random picker (DSA: same algorithm as weighted load balancers). `@faker-js/faker` + `tsx` added as devDeps.
@@ -33,12 +37,14 @@
 - **Singleton Redis client** at `src/lib/redis.ts` — `ioredis` with `lazyConnect: true`, globalThis pattern for HMR safety. BullMQ-ready for Phase 6.
 
 ### Decisions made
+
 - Phase 3 (Playwright + scrapers) deliberately deferred to tomorrow — tonight was re-entry, not progress
 - Cadence reset acknowledged: weekday 2-hr target was aspirational; build for 30–60 min reality
 - Did NOT run `npm audit fix` despite 5 moderate vulns from new devDeps — likely transitive in pdf-parse area, defer to Phase 8 dep audit
 - Did NOT upgrade Prisma 6 → 7 despite update prompt — major version, breaking changes, Phase 8 territory
 
 ### Carried over (deferred, not blocking)
+
 - [x] Health check `/api/health` — done same session
 - [x] `SECURITY.md` + GitHub secret scanning — done same session
 - [ ] Multi-resume profile UI (Phase 5/7)
@@ -46,11 +52,13 @@
 - [ ] Rotate Groq + Google OAuth + Cloudinary keys eventually (paranoia hygiene; secrets briefly visible during config session)
 
 ### Hygiene notes for future-me
+
 - Stay on `npx prisma db push` until Phase 8 baseline migration. **Never run `migrate dev`** — wiped DB on Day 3.
 - Prisma's `package.json#prisma` config is deprecated — Prisma 7 wants `prisma.config.ts`. Migrate when upgrading.
 - Soft-delete `$extends` only on Resume model. Extend to Application when soft-delete on apps lands in Phase 4.
 
 ### Next session (Day 5) — one objective
+
 **Sketch Phase 3 architecture on paper, no code.** Define the `Scraper` interface, per-source adapters (LinkedIn / Naukri / Instahyre / generic), where Redis caching fits, where BullMQ fits. 30–60 min thinking before any keystroke.
 
 ---
@@ -58,6 +66,7 @@
 ## 2026-04-20 (Day 3) — Phase 2 fully closed
 
 ### Shipped
+
 - **Cloudinary file storage:** SDK + helper with Zod-validated upload response, raw uploads to `resumes/<userId>/`, download button on detail page (`fl_attachment` forces download)
 - **Schema:** `cloudinaryPublicId` added to Resume (for future cleanup jobs)
 - **Avatar fix:** whitelisted Google + GitHub hosts in next.config, switched Header to `next/image` to avoid Google 429 rate limits
@@ -67,16 +76,19 @@
 - **Soft-delete on Resume (Phase 4 work pulled forward):** `deletedAt DateTime?` + index, Prisma `$extends` query middleware auto-filters `deletedAt: null` on all reads (modern API; `$use` deprecated in Prisma 6)
 
 ### Decisions made
+
 - Multi-resume profile UI **deferred** — Phase 5 will use a per-application resume picker (cleaner than `isDefault`), Phase 7 enforces Free-tier limit
 - Sentry **deferred to next session** (option (a) wizard or (b) manual TBD)
 - Deployment gate **relaxed**: PDF puts formal deploy at Phase 8; "deploy from Phase 1" is best-practice nudge in §19 Common Mistakes, not a hard checkpoint. Continuing to Phase 3 without prod deploy
 - Database wiped today (mixed `db push` + `migrate dev` reset everything) — staying on `db push` until Phase 8 baseline migration
 
 ### Bugs fixed mid-session
+
 - DB wiped → recreated via `npx prisma db push` + re-login
 - Google avatar 429 → `next/image` proxies and caches server-side
 
 ### Phase 2 gaps still open (deferred, not blocking)
+
 - [ ] Sentry error tracking (next session)
 - [ ] Production deploy (Phase 8)
 - [ ] Multi-resume profile UI (Phase 5/7)
@@ -86,6 +98,7 @@
 ## 2026-04-19 (Day 2) — Phase 2 mostly done
 
 ### Shipped
+
 - `@t3-oss/env-nextjs` — Zod-validated env vars at startup
 - Resume upload UI: react-dropzone + sonner toasts
 - File parsing: `pdf-parse` v2 (PDF) + `mammoth` (DOCX)
@@ -98,16 +111,19 @@
 - Improved extraction prompt with explicit JSON template + pattern hints
 
 ### Tested with
+
 - 3 different resumes — extraction is reasonably good now
 - Edit UI saves changes correctly
 - Upload auto-redirects to detail page
 
 ### Phase 2 gaps still open (finish tomorrow morning)
+
 - [ ] **Cloudinary upload + download** — store original PDF, add download button on detail page. Env vars already wired, just need signup + 3 keys + one API integration.
 - [ ] **Deploy to production** — blueprint says Phase 1 should already be live. We're 2 phases in with no live URL. Deploy target: Oracle Cloud ARM VM.
 - [ ] **LLM retry with adjusted prompt on invalid JSON** — currently `safeParse` fallback only. Deferred.
 
 ### Decisions made
+
 - Deferred Cloudinary originally, user pushed back and rightfully prioritised completion over forward motion
 - Chose not to build multiple-resume-profile UI (schema supports it, low priority)
 - Added two new teaching principles to CLAUDE.md: pace guardrail + deployment gate
@@ -117,6 +133,7 @@
 ## 2026-04-18 (Day 1) — Phase 1 complete
 
 ### Shipped
+
 - Next.js 15 + TypeScript strict + Turbopack
 - Prisma 6 schema applied to local Docker Postgres
 - NextAuth v5 with GitHub + Google OAuth (JWT strategy)

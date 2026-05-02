@@ -8,7 +8,9 @@ import { UploadCloud, FileText, Loader2 } from "lucide-react";
 
 const ACCEPTED_TYPES = {
   "application/pdf": [".pdf"],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+    ".docx",
+  ],
 };
 
 const MAX_SIZE_MB = 5;
@@ -89,7 +91,9 @@ export default function ResumeUpload() {
               Drag & drop your resume here, or{" "}
               <span className="text-blue-500 font-medium">click to browse</span>
             </p>
-            <p className="text-xs text-gray-400">PDF or DOCX · Max {MAX_SIZE_MB}MB</p>
+            <p className="text-xs text-gray-400">
+              PDF or DOCX · Max {MAX_SIZE_MB}MB
+            </p>
           </>
         )}
       </div>

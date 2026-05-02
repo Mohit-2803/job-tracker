@@ -54,9 +54,25 @@ export const JobExtractSchema = z.object({
   companyName: z.string(),
   jobLocation: z.string().optional(),
   salaryRange: z.string().optional(),
-  workModel: z.enum(["Remote", "Hybrid", "On-site", "Unknown"]).default("Unknown"),
+  workModel: z
+    .enum(["Remote", "Hybrid", "On-site", "Unknown"])
+    .default("Unknown"),
   employmentType: z.string().optional(),
   yearsOfExperience: z.string().optional(),
+  rawCompanyContext: z.string().optional(),
 });
 
 export type ParsedJobExtract = z.infer<typeof JobExtractSchema>;
+
+export const CompanyResearchSchema = z.object({
+  _thought_process: z.string(),
+  name: z.string(),
+  about: z.string().optional(),
+  size: z.string().optional(),
+  funding: z.string().optional(),
+  industry: z.string().optional(),
+  founded: z.string().optional(),
+  headquarters: z.string().optional(),
+});
+
+export type ParsedCompanyResearch = z.infer<typeof CompanyResearchSchema>;

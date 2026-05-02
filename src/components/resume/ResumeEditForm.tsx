@@ -17,7 +17,12 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
 
-  const { register, control, handleSubmit, formState: { errors } } = useForm<ParsedResume>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ParsedResume>({
     resolver: zodResolver(ResumeSchema),
     defaultValues: {
       name: initialData.name ?? "",
@@ -39,7 +44,10 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
   const experienceArray = useFieldArray({ control, name: "experience" });
   const educationArray = useFieldArray({ control, name: "education" });
   const projectsArray = useFieldArray({ control, name: "projects" });
-  const certificationsArray = useFieldArray({ control, name: "certifications" as never });
+  const certificationsArray = useFieldArray({
+    control,
+    name: "certifications" as never,
+  });
   const languagesArray = useFieldArray({ control, name: "languages" as never });
 
   const onSubmit = async (data: ParsedResume) => {
@@ -68,24 +76,55 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {/* Personal Info */}
       <Section title="Personal Information">
-        <Field label="Name" {...register("name")} error={errors.name?.message} />
-        <Field label="Email" {...register("email")} error={errors.email?.message} />
-        <Field label="Phone" {...register("phone")} error={errors.phone?.message} />
-        <Field label="Location" {...register("location")} error={errors.location?.message} />
-        <Field label="LinkedIn" {...register("linkedin")} error={errors.linkedin?.message} />
-        <TextArea label="Summary" {...register("summary")} error={errors.summary?.message} />
+        <Field
+          label="Name"
+          {...register("name")}
+          error={errors.name?.message}
+        />
+        <Field
+          label="Email"
+          {...register("email")}
+          error={errors.email?.message}
+        />
+        <Field
+          label="Phone"
+          {...register("phone")}
+          error={errors.phone?.message}
+        />
+        <Field
+          label="Location"
+          {...register("location")}
+          error={errors.location?.message}
+        />
+        <Field
+          label="LinkedIn"
+          {...register("linkedin")}
+          error={errors.linkedin?.message}
+        />
+        <TextArea
+          label="Summary"
+          {...register("summary")}
+          error={errors.summary?.message}
+        />
       </Section>
 
       {/* Skills */}
       <Section title="Skills">
         <div className="flex flex-wrap gap-2">
           {skillsArray.fields.map((field, i) => (
-            <div key={field.id} className="flex items-center gap-1 bg-gray-100 rounded-full pl-3 pr-1 py-1">
+            <div
+              key={field.id}
+              className="flex items-center gap-1 bg-gray-100 rounded-full pl-3 pr-1 py-1"
+            >
               <input
                 {...register(`skills.${i}` as const)}
                 className="bg-transparent text-sm outline-none min-w-0 w-32"
               />
-              <button type="button" onClick={() => skillsArray.remove(i)} className="p-1 hover:bg-gray-200 rounded-full">
+              <button
+                type="button"
+                onClick={() => skillsArray.remove(i)}
+                className="p-1 hover:bg-gray-200 rounded-full"
+              >
                 <Trash2 className="w-3 h-3 text-gray-500" />
               </button>
             </div>
@@ -104,25 +143,51 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
       <Section title="Experience">
         <div className="space-y-4">
           {experienceArray.fields.map((field, i) => (
-            <div key={field.id} className="border rounded-lg p-4 space-y-2 bg-gray-50">
+            <div
+              key={field.id}
+              className="border rounded-lg p-4 space-y-2 bg-gray-50"
+            >
               <div className="flex justify-between items-center">
-                <span className="text-xs font-medium text-gray-500">Experience {i + 1}</span>
-                <button type="button" onClick={() => experienceArray.remove(i)} className="text-red-500 hover:text-red-700">
+                <span className="text-xs font-medium text-gray-500">
+                  Experience {i + 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => experienceArray.remove(i)}
+                  className="text-red-500 hover:text-red-700"
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
               <Field label="Company" {...register(`experience.${i}.company`)} />
               <Field label="Role" {...register(`experience.${i}.role`)} />
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Start Date" {...register(`experience.${i}.startDate`)} />
-                <Field label="End Date" {...register(`experience.${i}.endDate`)} />
+                <Field
+                  label="Start Date"
+                  {...register(`experience.${i}.startDate`)}
+                />
+                <Field
+                  label="End Date"
+                  {...register(`experience.${i}.endDate`)}
+                />
               </div>
-              <TextArea label="Description" {...register(`experience.${i}.description`)} />
+              <TextArea
+                label="Description"
+                {...register(`experience.${i}.description`)}
+              />
             </div>
           ))}
           <button
             type="button"
-            onClick={() => experienceArray.append({ company: "", role: "", startDate: "", endDate: "", description: "" })}
+            onClick={() =>
+              experienceArray.append({
+                company: "",
+                role: "",
+                startDate: "",
+                endDate: "",
+                description: "",
+              })
+            }
             className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
           >
             <Plus className="w-4 h-4" /> Add experience
@@ -134,24 +199,49 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
       <Section title="Education">
         <div className="space-y-4">
           {educationArray.fields.map((field, i) => (
-            <div key={field.id} className="border rounded-lg p-4 space-y-2 bg-gray-50">
+            <div
+              key={field.id}
+              className="border rounded-lg p-4 space-y-2 bg-gray-50"
+            >
               <div className="flex justify-between items-center">
-                <span className="text-xs font-medium text-gray-500">Education {i + 1}</span>
-                <button type="button" onClick={() => educationArray.remove(i)} className="text-red-500 hover:text-red-700">
+                <span className="text-xs font-medium text-gray-500">
+                  Education {i + 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => educationArray.remove(i)}
+                  className="text-red-500 hover:text-red-700"
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
-              <Field label="Institution" {...register(`education.${i}.institution`)} />
+              <Field
+                label="Institution"
+                {...register(`education.${i}.institution`)}
+              />
               <Field label="Degree" {...register(`education.${i}.degree`)} />
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Start Date" {...register(`education.${i}.startDate`)} />
-                <Field label="End Date" {...register(`education.${i}.endDate`)} />
+                <Field
+                  label="Start Date"
+                  {...register(`education.${i}.startDate`)}
+                />
+                <Field
+                  label="End Date"
+                  {...register(`education.${i}.endDate`)}
+                />
               </div>
             </div>
           ))}
           <button
             type="button"
-            onClick={() => educationArray.append({ institution: "", degree: "", startDate: "", endDate: "" })}
+            onClick={() =>
+              educationArray.append({
+                institution: "",
+                degree: "",
+                startDate: "",
+                endDate: "",
+              })
+            }
             className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
           >
             <Plus className="w-4 h-4" /> Add education
@@ -163,21 +253,40 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
       <Section title="Projects">
         <div className="space-y-4">
           {projectsArray.fields.map((field, i) => (
-            <div key={field.id} className="border rounded-lg p-4 space-y-2 bg-gray-50">
+            <div
+              key={field.id}
+              className="border rounded-lg p-4 space-y-2 bg-gray-50"
+            >
               <div className="flex justify-between items-center">
-                <span className="text-xs font-medium text-gray-500">Project {i + 1}</span>
-                <button type="button" onClick={() => projectsArray.remove(i)} className="text-red-500 hover:text-red-700">
+                <span className="text-xs font-medium text-gray-500">
+                  Project {i + 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => projectsArray.remove(i)}
+                  className="text-red-500 hover:text-red-700"
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
               <Field label="Name" {...register(`projects.${i}.name`)} />
-              <TextArea label="Description" {...register(`projects.${i}.description`)} />
+              <TextArea
+                label="Description"
+                {...register(`projects.${i}.description`)}
+              />
               <Field label="Link" {...register(`projects.${i}.link`)} />
             </div>
           ))}
           <button
             type="button"
-            onClick={() => projectsArray.append({ name: "", description: "", technologies: [], link: "" })}
+            onClick={() =>
+              projectsArray.append({
+                name: "",
+                description: "",
+                technologies: [],
+                link: "",
+              })
+            }
             className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
           >
             <Plus className="w-4 h-4" /> Add project
@@ -187,11 +296,21 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
 
       {/* Certifications & Languages */}
       <Section title="Certifications">
-        <SimpleArrayEditor fieldArray={certificationsArray} register={register} name="certifications" label="certification" />
+        <SimpleArrayEditor
+          fieldArray={certificationsArray}
+          register={register}
+          name="certifications"
+          label="certification"
+        />
       </Section>
 
       <Section title="Languages">
-        <SimpleArrayEditor fieldArray={languagesArray} register={register} name="languages" label="language" />
+        <SimpleArrayEditor
+          fieldArray={languagesArray}
+          register={register}
+          name="languages"
+          label="language"
+        />
       </Section>
 
       {/* Submit */}
@@ -209,10 +328,18 @@ export default function ResumeEditForm({ resumeId, initialData }: Props) {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-3">
-      <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">{title}</h3>
+      <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+        {title}
+      </h3>
       {children}
     </div>
   );
@@ -222,7 +349,10 @@ function Field({
   label,
   error,
   ...props
-}: { label: string; error?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: {
+  label: string;
+  error?: string;
+} & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="block">
       <span className="text-sm font-medium text-gray-700">{label}</span>
@@ -239,7 +369,10 @@ function TextArea({
   label,
   error,
   ...props
-}: { label: string; error?: string } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+}: {
+  label: string;
+  error?: string;
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <label className="block">
       <span className="text-sm font-medium text-gray-700">{label}</span>
@@ -260,7 +393,12 @@ type SimpleArrayProps = {
   label: string;
 };
 
-function SimpleArrayEditor({ fieldArray, register, name, label }: SimpleArrayProps) {
+function SimpleArrayEditor({
+  fieldArray,
+  register,
+  name,
+  label,
+}: SimpleArrayProps) {
   return (
     <div className="space-y-2">
       {fieldArray.fields.map((field, i) => (

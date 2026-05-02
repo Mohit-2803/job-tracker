@@ -76,9 +76,42 @@ Expected JSON structure:
   "salaryRange": "string — salary or compensation range if mentioned (optional)",
   "workModel": "string — strictly one of: 'Remote', 'Hybrid', 'On-site', or 'Unknown'",
   "employmentType": "string — e.g. 'Full-time', 'Contract', 'Internship' (optional)",
-  "yearsOfExperience": "string — e.g. '3+ years', 'Entry-level' (optional)"
+  "yearsOfExperience": "string — e.g. '3+ years', 'Entry-level' (optional)",
+  "rawCompanyContext": "string — If you see an 'About the Company' or 'Company Overview' section in the raw text, extract the first 2-3 sentences here. This is critical for identifying the company correctly."
 }
 
 Raw Page Text:
 ${rawText}`;
+}
+
+export function buildCompanyResearchPrompt(
+  companyName: string,
+  context?: string,
+): string {
+  const contextSection = context
+    ? `\nCONTEXT FROM JOB POSTING (Use this to accurately identify the company):\n${context}\n`
+    : "";
+
+  return `You are an expert corporate researcher and investment analyst. I need a highly accurate, brief research summary about the company "${companyName}".
+${contextSection}
+Please provide the information in the exact JSON structure shown below. 
+
+CRITICAL RULES:
+1. Think Step-by-Step: Use the '_thought_process' field to analyze the company name and any provided context. If the context mentions specific products (like jewelry, software, or health), prioritize that over your general knowledge.
+2. High-Quality Summary: The 'about' section must be a highly professional 1-3 sentence summary of the company's core product, mission, and target market.
+3. Reasonable Estimates: Estimate their employee size, funding stage, industry, and headquarters based on your training data and the provided context. 
+4. Graceful Degradation: If it is a very obscure company or you have absolutely no data, make your best educated guess based on the name and context, or return "Unknown".
+
+Expected JSON structure:
+{
+  "_thought_process": "string — Analyze the company name and context, recall its business model, and estimate its scale.",
+  "name": "string — the actual company name (normalized)",
+  "about": "string — a brief 1-3 sentence professional summary of what the company does",
+  "size": "string — e.g. '1-50', '50-200', '1,000+', or 'Unknown'",
+  "funding": "string — e.g. 'Seed', 'Series A-C', 'Public', 'Bootstrapped', or 'Unknown'",
+  "industry": "string — e.g. 'B2B SaaS', 'Fintech', 'Healthcare', 'AI/ML'",
+  "founded": "string — the year they were founded (optional)",
+  "headquarters": "string — the city and country (optional)"
+}
+`;
 }

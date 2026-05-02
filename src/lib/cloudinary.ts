@@ -22,7 +22,7 @@ export type UploadResult = z.infer<typeof UploadResultSchema>;
 export async function uploadResumeFile(
   buffer: Buffer,
   userId: string,
-  filename: string
+  filename: string,
 ): Promise<UploadResult> {
   const raw = await new Promise<unknown>((resolve, reject) => {
     cloudinary.uploader
@@ -38,7 +38,7 @@ export async function uploadResumeFile(
           if (error) return reject(error);
           if (!result) return reject(new Error("Empty Cloudinary response"));
           resolve(result);
-        }
+        },
       )
       .end(buffer);
   });
