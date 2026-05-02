@@ -135,10 +135,12 @@ model Application {
   appliedAt       DateTime?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
+  deletedAt       DateTime?
 
   @@index([userId, status])
   @@index([userId, createdAt])
   @@index([companyId])
+  @@index([deletedAt])
 }
 
 model Subscription {

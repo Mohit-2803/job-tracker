@@ -128,3 +128,38 @@
     @apply font-sans;
   }
 }
+
+/* Global Total Blackout Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #27272a transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #27272a transparent;
+}
+
+.glass-morphism {
+  @apply bg-zinc-900/50 backdrop-blur-md border border-zinc-800/50;
+}
