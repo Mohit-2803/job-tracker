@@ -45,20 +45,35 @@ We implemented several advanced patterns that go beyond the base requirements:
 
 ---
 
-## 3. Tech Stack (Non-Negotiables)
+## 3. Tech Stack (The "Modern Pro" Stack)
 
-- **Frontend:** Next.js 15 App Router (React 19, async request APIs, Turbopack dev), TypeScript **strict mode** (no `any`, no `@ts-ignore`), Tailwind, shadcn/ui, Recharts, React Hook Form + Zod, Vercel AI SDK.
-- **Backend:** Next.js API routes, Prisma + PostgreSQL (NeonDB in prod, Docker Postgres locally), Redis + BullMQ (Upstash in prod), NextAuth v5, Resend, `@t3-oss/env-nextjs` (Zod-validated env vars — added Phase 2, validates all secrets at startup).
-- **AI:** Groq (Llama 3.3 70B) primary, Gemini Flash backup, structured JSON mode always validated with Zod.
-- **Scraping:** Playwright + Cheerio, per-source adapters, 1 req / 3 sec rate limit per domain, 24-hour Redis cache on research.
-- **Payments:** Razorpay Subscriptions, Test Mode during build, webhook signature verification is mandatory.
-- **DevOps:** Docker Compose (app + worker + postgres + redis + nginx), Oracle Cloud Always Free ARM VM, Cloudflare proxied, GitHub Actions.
+- **Framework**: Next.js 15 (App Router, React 19, Turbopack)
+- **Language**: TypeScript (Strict Mode)
+- **Database**: PostgreSQL (Prisma 6 ORM)
+- **Queue/Async**: BullMQ + Redis (ioredis)
+- **AI/LLM**: Groq (Llama 3.3 70B primary) + Vercel AI SDK
+- **Storage**: Cloudinary (Resume PDF/DOCX storage)
+- **Auth**: NextAuth.js v5 (Auth.js)
+- **Validation**: Zod + `@t3-oss/env-nextjs` (Type-safe ENV)
+- **Observability**: Sentry (Error tracking & Tracing)
+- **Parsing**: `pdf-parse`, `mammoth` (DOCX extraction)
+- **Scraping**: Playwright (Headless strategy pattern)
+- **UI/UX**: Tailwind CSS 4, shadcn/ui, Radix UI, Lucide, Sonner (Toasts), `react-dropzone`
+- **DX & Tooling**: `concurrently`, `tsx`, `prettier`, `@faker-js/faker` (Seeding)
 
-If I propose a dependency outside this stack, **challenge it**. Ask what problem I'm solving and whether an existing piece already solves it.
+## 4. Engineering Principles (Phase 3 Finalized)
+
+1. **Safety First**: Never use `process.env` directly; use the validated `env.mjs` pattern. All external data (LLM, Scraped, User) must be Zod-validated.
+2. **Async by Default**: Long-running tasks (Scraping, AI Research) MUST be offloaded to BullMQ workers to avoid API timeouts.
+3. **Semantic Intelligence**: Favor semantic AI analysis over simple keyword matching.
+4. **Strategy Pattern**: Use Scraper Factories and Adapters to keep the core logic provider-agnostic.
+5. **Idempotency**: Use `WebhookEvent` to track event IDs and prevent double-processing.
+6. **Soft Deletes**: Use `deletedAt` for Resumes and Applications. Never hard-delete data that might be linked to other models.
+7. **Context-Aware AI**: Always provide "Ground Truth" context (like raw page text) to LLMs to eliminate hallucinations.
 
 ---
 
-## 4. Who I Am
+## 5. Who I Am
 
 - **Current level:** Junior developer (~₹27K/mo), targeting ₹55–80K+ roles.
 - **Location:** Ahmedabad, Gujarat, India. Building for India-first (Razorpay, INR pricing, Naukri/Instahyre/Cutshort scrapers matter as much as LinkedIn).
@@ -175,12 +190,12 @@ Full schema lives in `prisma/schema.prisma`. Key models:
 - **User** — `id`, `email` (unique), `plan` (FREE|PRO enum), relations to everything else.
 - **Resume** — `rawText`, `parsedData` (Json), `isDefault`, `fileUrl`, `deletedAt` (DateTime?, added Phase 4). Indexed by `userId`.
 - **Company** — `name`, `domain` (unique), `researchData` (Json), `researchScore` (Float 0–10, higher = safer), `lastResearchAt`. Shared across users to save API calls.
-- **Application** — `userId`, `companyId`, `resumeId`, `jobUrl`, `jobDescription`, `extractedSkills` (Json), `matchScore`, `tailoredResume`, `coverLetter`, `status` (AppStatus enum), `deletedAt` (DateTime?, added Phase 4). Composite indexes on `(userId, status)`, `(userId, createdAt)`, and `(companyId)`. Soft delete strategy: never hard-delete, set `deletedAt`; Prisma middleware auto-filters it.
+- **Application** — `userId`, `companyId`, `resumeId`, `jobUrl`, `jobTitle`, `jobDescription`, `extractedSkills` (Json), `matchScore` (Float), `matchReasoning` (String), `topMissingSkills` (Json), `proTip` (String), `status` (AppStatus enum), `deletedAt` (DateTime?). Includes composite indexes for performance.
 - **Subscription** — `razorpaySubId` (unique), `status`, `currentPeriodEnd`. Separate from `User.plan` so billing states can be complex.
 - **ChatMessage** — `role` ("user"|"assistant"), `content`, `metadata` (Json). Indexed on `(userId, createdAt)`.
 - **WeeklyReport** — `weekStart`, `weekEnd`, `applicationsSent`, `responsesCount`, `companiesWatched` (Int), `alerts` (Json), `aiSummary`, `emailSentAt`.
 - **WebhookEvent** — `eventId` (unique), `type`. Used for Razorpay webhook idempotency in Phase 7 — prevents double-processing the same event.
-- **AppStatus** enum — `DRAFT | APPLIED | IN_REVIEW | INTERVIEW | OFFER | REJECTED | WITHDRAWN`.
+- **AppStatus** enum — `PENDING | DRAFT | APPLIED | IN_REVIEW | INTERVIEW | OFFER | REJECTED | WITHDRAWN | FAILED`.
 
 ---
 
