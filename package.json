@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:all": "concurrently -c \"cyan.bold,yellow.bold\" -n \"WEB,WORKER\" \"npm run dev\" \"npm run worker\"",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "worker": "tsx src/workers/scraper-worker.ts"
+    "worker": "tsx --env-file=.env src/workers/scraper-worker.ts",
+    "format": "prettier --write ."
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -51,8 +53,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.15",
+    "prettier": "^3.8.3",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"

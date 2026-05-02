@@ -1,5 +1,22 @@
 # Job Agent — Daily Progress Log
 
+## 2026-05-02 (Day 5) — Phase 3 Scraping Foundation
+
+### Shipped
+- **Strategy Pattern Interface**: Defined `ScraperAdapter` and implemented `GenericScraper` via Playwright.
+- **LLM Extraction Upgrade**: Updated Groq extraction prompt to include a `_thought_process` (Chain of Thought), explicit JSON schema formatting, and automated skill normalization.
+- **Async Queue Infrastructure**: Set up BullMQ with Redis. Created a separate Node.js `scraper-worker.ts` process.
+- **Next.js API Route**: Implemented `POST /api/applications` to enqueue jobs asynchronously (avoiding 504 timeouts).
+- **Database Schema**: Expanded `Application` model to include `workModel`, `employmentType`, and `yearsOfExperience`, and mapped the `Company` relation correctly in the worker.
+- **DX Improvements**: Installed `concurrently` and set up `npm run dev:all` for single-terminal logging, fixed BullMQ's `maxRetriesPerRequest` redis strictness, and enabled VS Code format-on-save via `.vscode/settings.json`.
+
+### Next Steps (Phase 3 Wrap-up)
+1. **The Scraper Factory**: Build `LinkedInScraper` and a factory to auto-intercept `/search/` URLs and convert them to clean `/view/` URLs.
+2. **Match Scoring Engine**: Algorithm to compare uploaded Resume skills vs scraped Application skills.
+3. **Company Research Agent**: AI logic to search the web and populate Company details (funding, size, industry).
+
+---
+
 ## 2026-05-01 (Day 4) — Re-entry + Phase 3 prep
 
 ### Context

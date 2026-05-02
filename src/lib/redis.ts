@@ -6,7 +6,7 @@ const globalForRedis = globalThis as unknown as { redis: Redis | undefined };
 export const redis =
   globalForRedis.redis ??
   new Redis(env.REDIS_URL, {
-    maxRetriesPerRequest: 3,
+    maxRetriesPerRequest: null,
     lazyConnect: true,
   });
 

@@ -14,7 +14,8 @@
       "Bash(npm install *)",
       "Bash(docker exec *)",
       "Bash(gh run *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000/api/health\" -UseBasicParsing -TimeoutSec 10; \"STATUS: $\\($r.StatusCode\\)\"; $r.Content } catch { \"ERROR: $_\" })"
     ]
   }
 }

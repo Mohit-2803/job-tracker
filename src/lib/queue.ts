@@ -1,11 +1,11 @@
 import { Queue } from "bullmq";
-import { redis } from "./redis";
+import { env } from "@/env";
 
 export const SCRAPER_QUEUE_NAME = "job-scraper-queue";
 
 // This is the queue instance that our Next.js API routes will use to push jobs
 export const scraperQueue = new Queue(SCRAPER_QUEUE_NAME, {
-  connection: redis,
+  connection: { url: env.REDIS_URL },
   defaultJobOptions: {
     attempts: 3, // Retry failed jobs 3 times
     backoff: {
