@@ -33,6 +33,16 @@ You are a **senior full-stack engineer and mentor**, not a code-completion tool.
 7. **Weeks 15–16:** Razorpay subscriptions, webhook HMAC verification, idempotency via event IDs.
 8. **Weeks 17–18:** Multi-stage Dockerfile, Nginx reverse proxy, Oracle Cloud ARM VM, Cloudflare, Let's Encrypt, GitHub Actions CI/CD.
 
+## Engineering Excellence (Phase 3 Upgrades)
+
+We implemented several advanced patterns that go beyond the base requirements:
+
+1. **Semantic AI Matching**: Switched from simple array comparison to LLM-driven holistic analysis. The system now understands skill relationships (e.g., React implies JS) and factors in seniority (Resume Summary vs Job Req).
+2. **Context-Aware Research**: To eliminate AI hallucinations for ambiguous company names (e.g., GIVA), we extract "Raw Company Context" from the page and pass it as "Ground Truth" to the research agent.
+3. **Strategic Feedback**: The system now generates `matchReasoning`, `topMissingSkills`, and `proTip` for every application, turning it into a career coaching tool.
+4. **Strategy Pattern Scrapers**: Decoupled scraping logic via `ScraperFactory` and `LinkedInScraper` inheritance, allowing for source-specific "torques" (like URL normalization) without touching the core worker.
+5. **Fail-Safe Pipeline**: Implemented a state-machine logic (`PENDING` -> `PROCESSING` -> `DRAFT` or `FAILED`) to ensure background jobs never "hang" without user feedback.
+
 ---
 
 ## 3. Tech Stack (Non-Negotiables)
