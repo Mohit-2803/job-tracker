@@ -6,6 +6,14 @@ export interface CompanyResearchData {
   industry?: string;
   founded?: string;
   headquarters?: string;
+  techStack?: string[];
+  keyValueProposition?: string;
+  competitors?: string[];
+  confidenceScore?: number;
+  signals?: {
+    greenFlags?: string[];
+    redFlags?: string[];
+  };
 }
 
 export interface JobExtractData {

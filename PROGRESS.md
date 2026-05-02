@@ -11,11 +11,28 @@
 - **Database Schema**: Expanded `Application` model to include `workModel`, `employmentType`, and `yearsOfExperience`, and mapped the `Company` relation correctly in the worker.
 - **DX Improvements**: Installed `concurrently` and set up `npm run dev:all` for single-terminal logging, fixed BullMQ's `maxRetriesPerRequest` redis strictness, and enabled VS Code format-on-save via `.vscode/settings.json`.
 
-### Next Steps (Phase 3 Wrap-up)
+- **Robust Error Handling**: Added `PENDING` and `FAILED` states to the system. The worker now catches crashes and updates the database status automatically.
+- **Semantic Strategic Matcher**: Upgraded scoring from "Keyword Matching" to "Holistic AI Analysis," including reasoning, missing skills, and actionable pro-tips.
+- **Worker Refactor**: Reorganized the scraper worker into a modular, step-based pipeline (Scrape -> Enrich -> Analyze -> Save).
 
-1. **The Scraper Factory**: Build `LinkedInScraper` and a factory to auto-intercept `/search/` URLs and convert them to clean `/view/` URLs.
-2. **Match Scoring Engine**: Algorithm to compare uploaded Resume skills vs scraped Application skills.
-3. **Company Research Agent**: AI logic to search the web and populate Company details (funding, size, industry).
+### Phase 3 Status: COMPLETED ✅ (Enhanced beyond original requirements)
+
+---
+
+### Advanced Learning Objectives (Optional Phase 3+ Add-ons)
+
+We have officially finished the Phase 3 core, but we are keeping these advanced topics on our radar for future mastery:
+1. **Stealth Scraping**: Using `playwright-extra` to hide our scraper fingerprint from advanced anti-bot systems.
+2. **Observability (BullBoard)**: Adding a real-time dashboard to monitor Redis queues and manage jobs.
+3. **Vision-Based Scraping**: Using Multi-modal AI to "see" screenshots of job pages instead of just reading text.
+
+---
+
+## Next Steps (Phase 4: Dashboard & UI Polish)
+
+1. **Application Grid**: Build a beautiful "Glassmorphism" grid to display all tracked applications.
+2. **Detail View**: Create a slide-over or modal to show the AI's research, match scores, and job description.
+3. **Real-time Status Updates**: (Optional) Use Polling or WebSockets to show the user when a job moves from `PENDING` to `DRAFT`.
 
 ---
 

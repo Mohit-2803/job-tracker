@@ -13,6 +13,7 @@ enum Plan {
 }
 
 enum AppStatus {
+  PENDING
   DRAFT
   APPLIED
   IN_REVIEW
@@ -20,6 +21,7 @@ enum AppStatus {
   OFFER
   REJECTED
   WITHDRAWN
+  FAILED
 }
 
 model User {
@@ -124,6 +126,9 @@ model Application {
   jobDescription  String?    @db.Text
   extractedSkills Json?
   matchScore      Float?
+  matchReasoning  String?    @db.Text
+  topMissingSkills Json?
+  proTip          String?    @db.Text
   tailoredResume  String?    @db.Text
   coverLetter     String?    @db.Text
   status          AppStatus  @default(APPLIED)

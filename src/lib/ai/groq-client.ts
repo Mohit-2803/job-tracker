@@ -8,11 +8,14 @@ import {
   type ParsedJobExtract,
   CompanyResearchSchema,
   type ParsedCompanyResearch,
+  MatchScoreSchema,
+  type ParsedMatchScore,
 } from "./schema";
 import {
   buildResumeExtractionPrompt,
   buildJobExtractionPrompt,
   buildCompanyResearchPrompt,
+  buildMatchScorePrompt,
 } from "./prompts";
 
 export const groqClient = new Groq({ apiKey: env.GROQ_API_KEY });
@@ -104,4 +107,33 @@ export async function researchCompanyData(
   throw new Error(
     `Company research failed Zod validation after retry: ${retry.error.message}`,
   );
+}
+
+export async function calculateMatchScoreWithAI(
+  jobSkills: string[],
+  resumeSkills: string[],
+  jobTitle: string,
+  candidateSummary?: string,
+  yearsOfExperience?: string,
+): Promise<ParsedMatchScore> {
+  const prompt = buildMatchScorePrompt(
+    jobSkills,
+    resumeSkills,
+    jobTitle,
+    candidateSummary,
+    yearsOfExperience,
+  );
+
+  const raw = await callGroq(prompt);
+  const result = MatchScoreSchema.safeParse(JSON.parse(raw));
+
+  if (result.success) return result.data;
+
+  // Simple retry
+  const retryRaw = await callGroq(buildCorrectivePrompt(prompt, result.error));
+  const retryResult = MatchScoreSchema.safeParse(JSON.parse(retryRaw));
+
+  if (retryResult.success) return retryResult.data;
+
+  throw new Error("AI Scoring failed after retry.");
 }

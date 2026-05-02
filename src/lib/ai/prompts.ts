@@ -101,6 +101,8 @@ CRITICAL RULES:
 2. High-Quality Summary: The 'about' section must be a highly professional 1-3 sentence summary of the company's core product, mission, and target market.
 3. Reasonable Estimates: Estimate their employee size, funding stage, industry, and headquarters based on your training data and the provided context. 
 4. Graceful Degradation: If it is a very obscure company or you have absolutely no data, make your best educated guess based on the name and context, or return "Unknown".
+5. Ground Truth: If the provided CONTEXT FROM JOB POSTING conflicts with your internal training data, prioritize the context.
+6. Zero Jargon: Avoid corporate "fluff" like 'innovative', 'world-class', 'leveraging', or 'synergy'. Be concrete about products and business models.
 
 Expected JSON structure:
 {
@@ -111,7 +113,60 @@ Expected JSON structure:
   "funding": "string — e.g. 'Seed', 'Series A-C', 'Public', 'Bootstrapped', or 'Unknown'",
   "industry": "string — e.g. 'B2B SaaS', 'Fintech', 'Healthcare', 'AI/ML'",
   "founded": "string — the year they were founded (optional)",
-  "headquarters": "string — the city and country (optional)"
+  "headquarters": "string — the city and country (optional)",
+  "techStack": ["string — key technologies they use, especially those mentioned in the job context"],
+  "keyValueProposition": "string — a 1-sentence 'hook' on why a developer would want to work there",
+  "competitors": ["string — names of 2-3 main competitors in their space"],
+  "confidenceScore": "number (0-100) — How sure are you about this data? 90+ if you know the brand well, 50 if you are guessing from context.",
+  "signals": {
+    "greenFlags": ["string — e.g. 'Strong funding', 'Modern tech', 'Remote-first'"],
+    "redFlags": ["string — e.g. 'Vague requirements', 'Legacy tech', 'High turnover signals'"]
+  }
+}
+`;
+}
+
+export function buildMatchScorePrompt(
+  jobSkills: string[],
+  resumeSkills: string[],
+  jobTitle: string,
+  candidateSummary?: string,
+  yearsOfExperience?: string,
+): string {
+  const seniorityContext = yearsOfExperience 
+    ? `JOB SENIORITY REQUIREMENT: ${yearsOfExperience}\n`
+    : "";
+  
+  const candidateContext = candidateSummary
+    ? `CANDIDATE PROFILE SUMMARY: ${candidateSummary}\n`
+    : "";
+
+  return `You are an elite Tech Career Coach and HR Expert. Your task is to calculate a "Match Score" between a Job and a Candidate.
+
+JOB TITLE: ${jobTitle}
+${seniorityContext}
+REQUIRED SKILLS: ${jobSkills.join(", ")}
+
+${candidateContext}
+CANDIDATE SKILLS: ${resumeSkills.join(", ")}
+
+SCORING WEIGHTS:
+- 60% Core Technical Match (Languages, Frameworks, Core Tech)
+- 30% Seniority & Experience Match (Years of exp, leadership, complexity of past work)
+- 10% Nice-to-haves (Tools, soft skills, secondary tech)
+
+CRITICAL RULES:
+1. Semantic Matching: Do not just look for exact word matches. Understand that "React" implies "JavaScript", "FastAPI" implies "Python", and "Postgres" implies "SQL".
+2. Seniority Check: If the candidate profile suggests they are too junior for a senior role, penalize the score significantly.
+3. Quality Over Quantity: 5 years of deep React experience is worth more than 1 month of 10 different frameworks.
+4. Strategy: Identify the top missing skills and provide a "Pro Tip" for the candidate.
+
+Expected JSON structure:
+{
+  "score": number (0-100),
+  "reasoning": "string",
+  "topMissingSkills": ["string — top 3 missing critical skills"],
+  "proTip": "string — Actionable advice to bridge the gap or ace the interview"
 }
 `;
 }

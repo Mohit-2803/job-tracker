@@ -73,6 +73,25 @@ export const CompanyResearchSchema = z.object({
   industry: z.string().optional(),
   founded: z.string().optional(),
   headquarters: z.string().optional(),
+  techStack: z.array(z.string()).optional(),
+  keyValueProposition: z.string().optional(),
+  competitors: z.array(z.string()).optional(),
+  confidenceScore: z.number().min(0).max(100).optional(),
+  signals: z
+    .object({
+      greenFlags: z.array(z.string()).optional(),
+      redFlags: z.array(z.string()).optional(),
+    })
+    .optional(),
 });
 
 export type ParsedCompanyResearch = z.infer<typeof CompanyResearchSchema>;
+
+export const MatchScoreSchema = z.object({
+  score: z.number().min(0).max(100),
+  reasoning: z.string(),
+  topMissingSkills: z.array(z.string()).optional(),
+  proTip: z.string().optional(),
+});
+
+export type ParsedMatchScore = z.infer<typeof MatchScoreSchema>;

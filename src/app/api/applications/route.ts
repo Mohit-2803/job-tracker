@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       data: {
         userId: session.user.id,
         jobUrl: jobUrl,
-        status: "DRAFT", // Set initial status to DRAFT
+        status: "PENDING", // Set initial status to PENDING
       },
     });
 
