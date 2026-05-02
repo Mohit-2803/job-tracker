@@ -28,11 +28,24 @@ We have officially finished the Phase 3 core, but we are keeping these advanced 
 
 ---
 
-## Next Steps (Phase 4: Dashboard & UI Polish)
+## Next Steps (Phase 5: AI Resume Tailoring & Chat)
 
-1. **Application Grid**: Build a beautiful "Glassmorphism" grid to display all tracked applications.
-2. **Detail View**: Create a slide-over or modal to show the AI's research, match scores, and job description.
-3. **Real-time Status Updates**: (Optional) Use Polling or WebSockets to show the user when a job moves from `PENDING` to `DRAFT`.
+1. **Tailoring Engine**: Build the system to reorder and rephrase resume bullets specifically for a given Job Description.
+2. **Streaming AI Chat**: Add the Vercel AI SDK to stream career advice contextually injected with the user's resume and job data.
+
+---
+
+## 2026-05-02 (Day 5 - Part 2) — Phase 4 Dashboard & Analytics
+
+### Shipped
+
+- **Kanban Board (`@dnd-kit/core`)**: Built a fully interactive drag-and-drop pipeline for applications with optimistic UI and real-time database syncing via Server Actions.
+- **Analytics Command Center**: Implemented a Recharts area chart for application velocity over the last 14 days, alongside real-time aggregated metrics (Interview Rate, Total, Avg Match).
+- **Glassmorphism Detail Drawer**: Added a slide-over panel that surfaces the AI's "Match Reasoning", actionable "Pro Tips", missing skills, and scraped Company Intelligence (Green/Red Flags).
+- **Real-Time Pipeline Polling**: Integrated a `useRouter().refresh()` polling mechanism that checks every 5 seconds if an application is in the `PENDING` state, instantly moving it into `DRAFT` on the UI when the BullMQ worker finishes.
+- **Soft Deletes Strategy**: Added `deletedAt` to the `Application` schema and wrote a custom Prisma extension to automatically filter out soft-deleted records from all queries, protecting relational data integrity.
+
+### Phase 4 Status: COMPLETED ✅
 
 ---
 

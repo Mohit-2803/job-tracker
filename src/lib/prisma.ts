@@ -23,6 +23,22 @@ function createPrismaClient() {
           return query(args);
         },
       },
+      application: {
+        async $allOperations({ operation, args, query }) {
+          const READ_OPS = [
+            "findUnique",
+            "findFirst",
+            "findMany",
+            "count",
+            "aggregate",
+          ];
+          if (READ_OPS.includes(operation)) {
+            const a = args as { where?: Record<string, unknown> };
+            a.where = { ...(a.where ?? {}), deletedAt: null };
+          }
+          return query(args);
+        },
+      },
     },
   });
 }
