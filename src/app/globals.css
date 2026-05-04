@@ -127,6 +127,13 @@
   html {
     @apply font-sans;
   }
+  /* Tailwind v4 defaults <button> to cursor: default per the W3C spec.
+     Override globally — every SaaS users have used trains them to expect pointer on buttons. */
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  a {
+    cursor: pointer;
+  }
 }
 
 /* Global Total Blackout Scrollbar */

@@ -95,3 +95,57 @@ export const MatchScoreSchema = z.object({
 });
 
 export type ParsedMatchScore = z.infer<typeof MatchScoreSchema>;
+
+export const TailoredResumeSchema = z.object({
+  _thought_process: z.string(),
+  originalSummary: z.string().optional(),
+  tailoredSummary: z.string(),
+  summaryChanged: z.boolean(),
+  experience: z.array(
+    z.object({
+      company: z.string(),
+      role: z.string(),
+      startDate: z.string().optional(),
+      endDate: z.string().optional(),
+      originalDescription: z.string(),
+      tailoredDescription: z.string(),
+      changed: z.boolean(),
+      rationale: z.string().optional(),
+    }),
+  ),
+  skillsOrder: z.array(z.string()),
+  emphasizedSkills: z.array(z.string()),
+  warnings: z.array(z.string()).optional(),
+});
+
+export type ParsedTailoredResume = z.infer<typeof TailoredResumeSchema>;
+
+export const CoverLetterSchema = z.object({
+  _thought_process: z.string(),
+  coverLetter: z.string(),
+  toneNotes: z.string().optional(),
+});
+
+export type ParsedCoverLetter = z.infer<typeof CoverLetterSchema>;
+
+// Shape committed to the database when the user saves their accept/reject decisions.
+// Mirrors `CommittedTailoredResume` in tailorReducer.ts but lives here so the API route
+// can validate inbound JSON without importing client-only code.
+export const CommittedTailoredResumeSchema = z.object({
+  summary: z.string(),
+  experience: z.array(
+    z.object({
+      company: z.string(),
+      role: z.string(),
+      startDate: z.string().optional(),
+      endDate: z.string().optional(),
+      description: z.string(),
+    }),
+  ),
+  skillsOrder: z.array(z.string()),
+  emphasizedSkills: z.array(z.string()),
+});
+
+export type CommittedTailoredResumeInput = z.infer<
+  typeof CommittedTailoredResumeSchema
+>;

@@ -25,8 +25,11 @@ export function KanbanCard({ app, onClick }: { app: any, onClick?: () => void })
       <div className="flex justify-between items-start mb-6 relative z-10 gap-4">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <div className="w-12 h-12 shrink-0 rounded-2xl bg-white border border-zinc-700/30 flex items-center justify-center overflow-hidden shadow-xl group-hover:border-zinc-500 transition-colors">
-            <img 
-              src={imgError ? backupUrl : logoUrl} 
+            {/* Dynamic third-party CDN logo (Logo.dev / UI-Avatars). Plain img is correct here —
+                proxying through next/image adds infra cost without optimization win on already-small CDN assets. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imgError ? backupUrl : logoUrl}
               alt={companyName}
               className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
               loading="lazy"

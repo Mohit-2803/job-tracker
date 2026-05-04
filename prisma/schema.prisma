@@ -129,8 +129,13 @@ model Application {
   matchReasoning  String?    @db.Text
   topMissingSkills Json?
   proTip          String?    @db.Text
-  tailoredResume  String?    @db.Text
-  coverLetter     String?    @db.Text
+  tailoredResume     String?    @db.Text
+  tailoredResumeData Json?
+  tailoredAt         DateTime?
+  committedResumeData Json?
+  committedAt         DateTime?
+  coverLetter        String?    @db.Text
+  coverLetterAt      DateTime?
   status          AppStatus  @default(APPLIED)
   appliedAt       DateTime?
   createdAt       DateTime   @default(now())

@@ -1,20 +1,37 @@
 import React from "react";
-import { X, ExternalLink, Briefcase, Zap, AlertTriangle, BadgeCheck, Globe, DollarSign } from "lucide-react";
+import Link from "next/link";
+import { X, ExternalLink, Briefcase, Zap, AlertTriangle, BadgeCheck, Globe, Sparkles, ArrowRight } from "lucide-react";
+import type { Application, Company } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { getCompanyLogo } from "@/lib/logos";
 
+// Prisma-derived type — drawer takes an Application with its Company eagerly loaded.
+// Loose-typing the JSON payloads (matchReasoning skills, etc.) since the drawer reads
+// them defensively and they're already Zod-validated upstream.
+export type ApplicationWithCompany = Application & {
+  company: Company | null;
+};
+
 interface ApplicationDrawerProps {
-  app: any | null;
+  app: ApplicationWithCompany | null;
   isOpen: boolean;
   onClose: () => void;
 }
+
+// Narrow shape for the JSON `researchData` blob — only the keys this drawer reads.
+type ResearchDataShape = {
+  industry?: string;
+  size?: string;
+  techStack?: string[];
+  signals?: { greenFlags?: string[] };
+};
 
 export function ApplicationDrawer({ app, isOpen, onClose }: ApplicationDrawerProps) {
   const [imgError, setImgError] = React.useState(false);
 
   if (!isOpen || !app) return null;
 
-  const researchData = app.company?.researchData as any;
+  const researchData = app.company?.researchData as ResearchDataShape | null;
   const score = app.matchScore;
   const companyName = app.company?.name || "Unknown Company";
   const { logoUrl, backupUrl } = getCompanyLogo(companyName);
@@ -33,8 +50,10 @@ export function ApplicationDrawer({ app, isOpen, onClose }: ApplicationDrawerPro
         <div className="flex items-center justify-between p-8 border-b border-zinc-800/30">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 shrink-0 rounded-xl bg-white border border-zinc-800/50 flex items-center justify-center overflow-hidden">
-              <img 
-                src={imgError ? backupUrl : logoUrl} 
+              {/* Dynamic third-party CDN logo — see KanbanCard for rationale on why plain img is correct. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imgError ? backupUrl : logoUrl}
                 alt={companyName}
                 className="w-full h-full object-cover"
                 onError={() => setImgError(true)}
@@ -122,7 +141,7 @@ export function ApplicationDrawer({ app, isOpen, onClose }: ApplicationDrawerPro
 
             <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-[1.5rem] p-6 text-sm text-zinc-400 leading-relaxed italic relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 blur-2xl rounded-full -mr-12 -mt-12" />
-              "{app.matchReasoning || "No reasoning provided."}"
+              &ldquo;{app.matchReasoning || "No reasoning provided."}&rdquo;
             </div>
             
             {/* Strategy / Pro Tip */}
@@ -144,7 +163,9 @@ export function ApplicationDrawer({ app, isOpen, onClose }: ApplicationDrawerPro
                   <h4 className="font-bold text-zinc-400 text-[10px] uppercase tracking-[0.2em]">Skill Gaps Detected</h4>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {app.topMissingSkills.map((skill: string, idx: number) => (
+                  {/* topMissingSkills is a Prisma Json[] column — narrow with a runtime
+                      string filter so TS gets a clean string[] without an `as` cast. */}
+                  {(app.topMissingSkills as unknown[]).filter((s): s is string => typeof s === "string").map((skill, idx) => (
                     <span key={idx} className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-lg text-[10px] font-bold uppercase tracking-tight">
                       {skill}
                     </span>
@@ -221,19 +242,41 @@ export function ApplicationDrawer({ app, isOpen, onClose }: ApplicationDrawerPro
           </section>
         </div>
 
-        {/* Footer Link */}
-        {app.jobUrl && (
-          <div className="p-8 border-t border-zinc-800/30">
-            <a 
-              href={app.jobUrl} 
-              target="_blank" 
+        {/* Footer Actions */}
+        <div className="p-8 border-t border-zinc-800/30 space-y-3">
+          {/* Primary: open the focused work surface. Only enabled once scraping has produced a jobTitle —
+              otherwise the studio's API will 409 and the user will hit a confusing error. */}
+          <Link
+            href={`/dashboard/applications/${app.id}`}
+            aria-disabled={!app.jobTitle}
+            onClick={(e) => {
+              if (!app.jobTitle) e.preventDefault();
+            }}
+            className={cn(
+              "flex items-center justify-center w-full py-4 px-4 rounded-2xl transition-all font-bold text-xs uppercase tracking-[0.2em] group",
+              app.jobTitle
+                ? "bg-indigo-500 hover:bg-indigo-400 text-white shadow-[0_0_40px_rgba(99,102,241,0.3)]"
+                : "bg-zinc-900 border border-zinc-800 text-zinc-600 cursor-not-allowed"
+            )}
+            title={app.jobTitle ? "Rewrite your resume to match this job" : "Waiting for scraping to finish"}
+          >
+            <Sparkles className="w-4 h-4 mr-2" />
+            Rewrite Resume for This Job
+            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+          </Link>
+
+          {/* Secondary: external reference */}
+          {app.jobUrl && (
+            <a
+              href={app.jobUrl}
+              target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-center w-full py-4 px-4 bg-white hover:bg-zinc-200 text-zinc-950 rounded-2xl transition-all font-bold text-xs uppercase tracking-[0.2em] group shadow-2xl"
+              className="flex items-center justify-center w-full py-3 px-4 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-2xl transition-all font-bold text-[10px] uppercase tracking-[0.2em] group"
             >
-              Original Posting <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              Original Posting <ExternalLink className="w-3.5 h-3.5 ml-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </>
   );

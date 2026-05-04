@@ -10,12 +10,18 @@ import {
   type ParsedCompanyResearch,
   MatchScoreSchema,
   type ParsedMatchScore,
+  TailoredResumeSchema,
+  type ParsedTailoredResume,
+  CoverLetterSchema,
+  type ParsedCoverLetter,
 } from "./schema";
 import {
   buildResumeExtractionPrompt,
   buildJobExtractionPrompt,
   buildCompanyResearchPrompt,
   buildMatchScorePrompt,
+  buildResumeTailoringPrompt,
+  buildCoverLetterPrompt,
 } from "./prompts";
 
 export const groqClient = new Groq({ apiKey: env.GROQ_API_KEY });
@@ -106,6 +112,64 @@ export async function researchCompanyData(
 
   throw new Error(
     `Company research failed Zod validation after retry: ${retry.error.message}`,
+  );
+}
+
+export async function tailorResumeForJob(
+  parsedResume: ParsedResume,
+  jobTitle: string,
+  extractedSkills: string[],
+  jobDescription?: string,
+  companyContext?: string,
+): Promise<ParsedTailoredResume> {
+  const prompt = buildResumeTailoringPrompt(
+    parsedResume,
+    jobTitle,
+    extractedSkills,
+    jobDescription,
+    companyContext,
+  );
+
+  const firstRaw = await callGroq(prompt);
+  const first = TailoredResumeSchema.safeParse(JSON.parse(firstRaw));
+  if (first.success) return first.data;
+
+  const retryRaw = await callGroq(buildCorrectivePrompt(prompt, first.error));
+  const retry = TailoredResumeSchema.safeParse(JSON.parse(retryRaw));
+  if (retry.success) return retry.data;
+
+  throw new Error(
+    `Resume tailoring failed Zod validation after retry: ${retry.error.message}`,
+  );
+}
+
+export async function generateCoverLetter(
+  parsedResume: ParsedResume,
+  jobTitle: string,
+  companyName: string,
+  extractedSkills: string[],
+  companyResearch?: unknown,
+  jobDescription?: string,
+): Promise<ParsedCoverLetter> {
+  const prompt = buildCoverLetterPrompt(
+    parsedResume,
+    jobTitle,
+    companyName,
+    extractedSkills,
+    companyResearch,
+    jobDescription,
+  );
+
+  const firstRaw = await callGroq(prompt);
+  const first = CoverLetterSchema.safeParse(JSON.parse(firstRaw));
+  if (first.success) return first.data;
+
+  const retryRaw = await callGroq(buildCorrectivePrompt(prompt, first.error));
+  const retry = CoverLetterSchema.safeParse(JSON.parse(retryRaw));
+  if (retry.success) return retry.data;
+
+  throw new Error(
+    `Cover letter generation failed Zod validation after retry: ${retry.error.message}`,
   );
 }
 

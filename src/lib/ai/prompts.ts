@@ -126,6 +126,105 @@ Expected JSON structure:
 `;
 }
 
+export function buildResumeTailoringPrompt(
+  parsedResume: unknown,
+  jobTitle: string,
+  extractedSkills: string[],
+  jobDescription?: string,
+  companyContext?: string,
+): string {
+  const jdSection = jobDescription
+    ? `\nJOB DESCRIPTION (excerpt):\n${jobDescription.substring(0, 3000)}\n`
+    : "";
+  const companySection = companyContext
+    ? `\nCOMPANY CONTEXT:\n${companyContext.substring(0, 800)}\n`
+    : "";
+
+  return `You are an elite resume strategist. Your job is to TAILOR a candidate's existing resume to a specific role — emphasizing the experience and skills that align with the job — without ever inventing facts.
+
+JOB TITLE: ${jobTitle}
+JOB REQUIRED SKILLS: ${extractedSkills.join(", ")}
+${jdSection}${companySection}
+CANDIDATE RESUME (JSON):
+${JSON.stringify(parsedResume, null, 2)}
+
+ABSOLUTE RULES (violating any of these is a failure):
+1. NEVER FABRICATE. Do not invent companies, roles, dates, technologies, projects, or accomplishments that are not already present in the candidate's resume above.
+2. NEVER ADD SKILLS the candidate does not already list. You may REORDER and EMPHASIZE; you may not invent.
+3. If the candidate lacks a critical job skill, do NOT pretend they have it. Instead, add an entry to "warnings" explaining the gap honestly.
+4. You MAY rephrase descriptions to use the language of the JD (e.g. if the candidate wrote "made a website with React" and the JD asks for "frontend engineering", you may rewrite as "Engineered a frontend application using React"). The underlying fact must remain true.
+5. You MAY reorder the skills list to put job-matching skills first.
+6. Preserve every experience entry — do not delete past roles even if irrelevant. You may shorten irrelevant ones.
+7. Set "changed: false" and copy the original verbatim into "tailoredDescription" if no change was warranted for that entry.
+
+OUTPUT JSON STRUCTURE:
+{
+  "_thought_process": "string — Step-by-step: which JD skills does the candidate already have? Which experience entries can be re-emphasized to highlight those skills? What gaps must I flag honestly?",
+  "originalSummary": "string — The candidate's existing summary, copied verbatim. Empty string if none exists.",
+  "tailoredSummary": "string — A rewritten 2-4 sentence professional summary emphasizing alignment with the job. If no original existed, write one using ONLY facts from their experience and skills.",
+  "summaryChanged": "boolean — true if tailoredSummary differs from originalSummary",
+  "experience": [
+    {
+      "company": "string — copied from input",
+      "role": "string — copied from input",
+      "startDate": "string — copied from input",
+      "endDate": "string — copied from input",
+      "originalDescription": "string — copied verbatim from the input resume",
+      "tailoredDescription": "string — rewritten to emphasize job-relevant skills, OR identical to originalDescription if no change needed",
+      "changed": "boolean — true if tailoredDescription differs from originalDescription",
+      "rationale": "string — 1 sentence explaining why this entry was rewritten (or why it wasn't). Required when changed=true."
+    }
+  ],
+  "skillsOrder": ["string — the candidate's full skill list, reordered so job-matching skills come first. Do NOT add new skills."],
+  "emphasizedSkills": ["string — the 3-7 skills from the candidate's list that are most relevant to this job"],
+  "warnings": ["string — honest gaps the candidate should know about, e.g. 'JD requires Kubernetes; candidate has no container experience listed'"]
+}
+
+Return ONLY the JSON object. No prose, no markdown fencing.`;
+}
+
+export function buildCoverLetterPrompt(
+  parsedResume: unknown,
+  jobTitle: string,
+  companyName: string,
+  extractedSkills: string[],
+  companyResearch?: unknown,
+  jobDescription?: string,
+): string {
+  const researchSection = companyResearch
+    ? `\nCOMPANY RESEARCH (use specific details from this — funding stage, mission, products):\n${JSON.stringify(companyResearch, null, 2).substring(0, 1500)}\n`
+    : "";
+  const jdSection = jobDescription
+    ? `\nJOB DESCRIPTION (excerpt):\n${jobDescription.substring(0, 2000)}\n`
+    : "";
+
+  return `You are an expert cover-letter writer. Write a personalized, concise cover letter for the candidate below targeting this specific role and company.
+
+JOB TITLE: ${jobTitle}
+COMPANY: ${companyName}
+JOB REQUIRED SKILLS: ${extractedSkills.join(", ")}
+${jdSection}${researchSection}
+CANDIDATE RESUME (JSON):
+${JSON.stringify(parsedResume, null, 2)}
+
+ABSOLUTE RULES:
+1. NEVER fabricate experience, skills, or projects the candidate does not have.
+2. Reference at least one SPECIFIC detail about the company — its funding stage, products, mission, or recent news — drawn from the COMPANY RESEARCH section. Do NOT use generic praise like "innovative" or "industry-leading".
+3. Connect 2-3 of the candidate's REAL accomplishments directly to the job's requirements.
+4. Length: 250-350 words. 3-4 short paragraphs. No filler.
+5. Tone: confident, specific, professional. Avoid "I am writing to express my interest" boilerplate.
+6. Do NOT include the date, address blocks, or "Dear Hiring Manager" salutation — start directly with the opening line. The candidate will add formal headers themselves.
+
+OUTPUT JSON STRUCTURE:
+{
+  "_thought_process": "string — Which company details did I find that I can reference specifically? Which 2-3 candidate accomplishments map best to the role?",
+  "coverLetter": "string — The cover letter body in plain text with paragraph breaks via \\n\\n. Markdown is allowed for emphasis but not required.",
+  "toneNotes": "string — 1 sentence on the tone chosen and why (e.g. 'Confident and technical, matching the company's engineering-focused brand')."
+}
+
+Return ONLY the JSON object.`;
+}
+
 export function buildMatchScorePrompt(
   jobSkills: string[],
   resumeSkills: string[],

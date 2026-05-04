@@ -4,7 +4,7 @@ import { redirect, notFound } from "next/navigation";
 import ResumeEditForm from "@/components/resume/ResumeEditForm";
 import type { ParsedResume } from "@/lib/ai/schema";
 import Link from "next/link";
-import { ArrowLeft, Download, ShieldCheck, ChevronRight } from "lucide-react";
+import { ArrowLeft, Download, ShieldCheck } from "lucide-react";
 
 export default async function ResumeDetailPage({
   params,
@@ -24,9 +24,8 @@ export default async function ResumeDetailPage({
   return (
     <div className="min-h-full">
       {/* Sticky Command Header */}
-      <div className="sticky top-0 z-[60] bg-[#0c0c0e]/60 backdrop-blur-3xl border-b border-white/5 px-6 lg:px-10 py-4">
+      <div className="sticky top-0 z-60 bg-[#0c0c0e]/60 backdrop-blur-3xl border-b border-white/5 px-6 lg:px-10 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-8">
-          
           <div className="flex items-center gap-6">
             {/* Tactical Breadcrumb */}
             <Link
@@ -48,9 +47,13 @@ export default async function ResumeDetailPage({
                   <h1 className="text-sm font-black text-white tracking-widest uppercase truncate max-w-[200px] md:max-w-none">
                     {resume.title}
                   </h1>
-                  <span className="hidden md:inline-flex items-center px-1.5 py-0.5 bg-emerald-500/5 border border-emerald-500/10 rounded text-[8px] font-black text-emerald-500 uppercase tracking-widest">Verified</span>
+                  <span className="hidden md:inline-flex items-center px-1.5 py-0.5 bg-emerald-500/5 border border-emerald-500/10 rounded text-[8px] font-black text-emerald-500 uppercase tracking-widest">
+                    Verified
+                  </span>
                 </div>
-                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">System Ingest: {resume.id.slice(-8).toUpperCase()}</p>
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                  System Ingest: {resume.id.slice(-8).toUpperCase()}
+                </p>
               </div>
             </div>
           </div>
@@ -71,8 +74,8 @@ export default async function ResumeDetailPage({
 
       <div className="p-6 lg:p-10 max-w-7xl mx-auto relative">
         {/* Background Decorative Glow */}
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-500/5 blur-[150px] rounded-full pointer-events-none -z-10" />
-        
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-200 h-200 bg-indigo-500/5 blur-[150px] rounded-full pointer-events-none -z-10" />
+
         <ResumeEditForm
           resumeId={resume.id}
           initialData={resume.parsedData as ParsedResume}
