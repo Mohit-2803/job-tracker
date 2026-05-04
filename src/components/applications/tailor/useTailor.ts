@@ -16,11 +16,15 @@ export type SaveStatus = "idle" | "saving" | "saved" | "error";
 export function useTailor(
   applicationId: string,
   initialTailored: ParsedTailoredResume | null,
+  initialTailoredAt: Date | null = null,
   initialCommittedAt: Date | null = null,
 ) {
   const [tailored, setTailored] = useState<ParsedTailoredResume | null>(
     initialTailored,
   );
+  // tailoredAt is server-authoritative — track it in hook state so Regenerate updates the
+  // "Last rewritten" timestamp without a page refresh.
+  const [tailoredAt, setTailoredAt] = useState<Date | null>(initialTailoredAt);
   // If we already have a stored tailored result, the hook starts in "ready" — not "idle".
   const [status, setStatus] = useState<TailorStatus>(
     initialTailored ? "ready" : "idle",
@@ -69,6 +73,13 @@ export function useTailor(
       }
 
       setTailored(parsed.data);
+      // Server returns the authoritative timestamp on the new tailoring; trust it
+      // over a client `new Date()` to keep DB and UI consistent.
+      if (payload?.tailoredAt) {
+        setTailoredAt(new Date(payload.tailoredAt));
+      } else {
+        setTailoredAt(new Date());
+      }
       setStatus("ready");
       // A new tailoring run invalidates any prior committed timestamp UX-wise —
       // the user now has fresh suggestions to re-decide. We don't clear the DB
@@ -125,8 +136,17 @@ export function useTailor(
     }
   }
 
+  // Lets the studio invalidate the "Saved" UI when the user makes more decisions
+  // after a successful save. Without this, the button stays "Saved" forever even
+  // though the in-memory state has diverged from what's persisted.
+  function resetSaveStatus(): void {
+    setSaveStatus("idle");
+    setSaveError(null);
+  }
+
   return {
     tailored,
+    tailoredAt,
     status,
     error,
     runTailor,
@@ -134,5 +154,6 @@ export function useTailor(
     saveError,
     committedAt,
     commit,
+    resetSaveStatus,
   };
 }

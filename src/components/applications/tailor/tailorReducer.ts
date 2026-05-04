@@ -13,7 +13,8 @@ export type TailorAction =
   | { type: "ACCEPT_EXPERIENCE"; key: string }
   | { type: "REJECT_EXPERIENCE"; key: string }
   | { type: "ACCEPT_ALL" } // bulk: every pending → accepted
-  | { type: "RESET" }; // back to all pending
+  | { type: "RESET" } // back to all pending, preserves keys
+  | { type: "HYDRATE"; state: TailorState }; // replace entire state — used when a regenerate produces new entries
 
 export function tailorReducer(
   state: TailorState,
@@ -51,6 +52,11 @@ export function tailorReducer(
           Object.keys(state.experience).map((key) => [key, "pending"]),
         ),
       };
+    case "HYDRATE":
+      // Wholesale replacement — caller decides the new shape (typically derived from a fresh
+      // tailor result + any prior committed state). Used when Regenerate lands and the old
+      // experience keys may no longer exist.
+      return action.state;
     default:
       return state;
   }

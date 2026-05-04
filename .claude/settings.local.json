@@ -17,7 +17,9 @@
       "Bash(npx tsc *)",
       "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000/api/health\" -UseBasicParsing -TimeoutSec 10; \"STATUS: $\\($r.StatusCode\\)\"; $r.Content } catch { \"ERROR: $_\" })",
       "Bash(npx next *)",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(head -n 358 src/components/applications/tailor/TailorStudio.tsx)",
+      "Bash(mv /tmp/studio.tmp src/components/applications/tailor/TailorStudio.tsx)"
     ]
   }
 }

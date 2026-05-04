@@ -102,7 +102,7 @@ export default async function ApplicationDetailPage({
           resumeId={application.resumeId ?? null}
           resumeTitle={application.resume?.title ?? null}
           initialTailored={initialTailored}
-          tailoredAt={application.tailoredAt}
+          initialTailoredAt={application.tailoredAt}
           initialCommitted={initialCommitted}
           initialCommittedAt={application.committedAt}
         />

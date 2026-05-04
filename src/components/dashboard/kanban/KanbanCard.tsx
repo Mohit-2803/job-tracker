@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MapPin, BadgeCheck, AlertTriangle } from "lucide-react";
+import { MapPin, BadgeCheck, AlertTriangle, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { getCompanyLogo } from "@/lib/logos";
@@ -88,9 +88,15 @@ export function KanbanCard({ app, onClick }: { app: any, onClick?: () => void })
       </div>
 
       {/* Insight Badges (Minimalist & Interactive) */}
-      {(app.proTip || (app.topMissingSkills && Array.isArray(app.topMissingSkills) && app.topMissingSkills.length > 0)) && (
+      {(app.proTip || app.committedAt || (app.topMissingSkills && Array.isArray(app.topMissingSkills) && app.topMissingSkills.length > 0)) && (
         <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between relative z-10">
            <div className="flex gap-2">
+             {app.committedAt && (
+               <div className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-500/10 border border-indigo-500/30 rounded-lg" title="Resume rewritten and saved for this job">
+                 <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                 <span className="text-[8px] font-black text-indigo-300 uppercase tracking-widest">Tailored</span>
+               </div>
+             )}
              {app.proTip && (
                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white rounded-lg shadow-xl" title="Pro Tip available">
                  <BadgeCheck className="w-3.5 h-3.5 text-zinc-950" />
