@@ -10,6 +10,7 @@ import {
   Target,
   Save,
   CheckCircle2,
+  FileText,
 } from "lucide-react";
 import { useTailor } from "./useTailor";
 import {
@@ -25,6 +26,8 @@ import { WarningsPanel } from "./parts/WarningsPanel";
 import { SummaryDiff } from "./parts/SummaryDiff";
 import { ExperienceDiff } from "./parts/ExperienceDiff";
 import { SkillsPanel } from "./parts/SkillsPanel";
+import { PdfPreviewModal } from "./parts/PdfPreviewModal";
+import { RewriteLoadingPanel } from "./parts/RewriteLoadingPanel";
 import type { ParsedTailoredResume } from "@/lib/ai/schema";
 
 type Props = {
@@ -79,6 +82,7 @@ export function TailorStudio({
     [companyName],
   );
   const [logoError, setLogoError] = useState(false);
+  const [pdfOpen, setPdfOpen] = useState(false);
 
   // On first mount, derive the reducer state by comparing the stored committed payload
   // (if any) against the suggestions. This restores the user's accept/reject decisions
@@ -270,6 +274,23 @@ export function TailorStudio({
                 </>
               )}
             </button>
+
+            {/* PDF preview gated on having a saved version. We disable rather
+                than hide so the user can see the feature exists even before they save. */}
+            <button
+              type="button"
+              onClick={() => setPdfOpen(true)}
+              disabled={!committedAt}
+              title={
+                committedAt
+                  ? "Preview the rendered PDF and download"
+                  : "Save your decisions first to enable PDF export"
+              }
+              className="flex items-center gap-2 bg-white text-zinc-950 hover:bg-zinc-200 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-[0_0_30px_rgba(255,255,255,0.05)] disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-zinc-900 disabled:text-zinc-600"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              View PDF
+            </button>
           </div>
         )}
       </div>
@@ -303,7 +324,11 @@ export function TailorStudio({
         </div>
       )}
 
-      {/* Empty State */}
+      {/* Loading State — multi-step panel covers both first-generate and regenerate.
+          Without this, the UI is blank for 3-5s while the LLM works, which feels broken. */}
+      {isLoading && <RewriteLoadingPanel />}
+
+      {/* Empty State — only when truly idle with no prior result */}
       {status === "idle" && !tailored && (
         <div className="bg-zinc-900/30 border border-dashed border-zinc-800 rounded-2xl p-12 text-center">
           <Sparkles className="w-8 h-8 text-zinc-700 mx-auto mb-4" />
@@ -359,6 +384,13 @@ export function TailorStudio({
           />
         </div>
       )}
+
+      {/* Modal mount — renders at end of tree so its fixed-position layers stack above everything */}
+      <PdfPreviewModal
+        applicationId={applicationId}
+        open={pdfOpen}
+        onClose={() => setPdfOpen(false)}
+      />
     </div>
   );
 }

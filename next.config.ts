@@ -2,7 +2,9 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["pdf-parse"],
+  // Playwright must be external — Next.js's bundler can't statically include
+  // Chromium binaries. Same reason pdf-parse is here.
+  serverExternalPackages: ["pdf-parse", "playwright"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
